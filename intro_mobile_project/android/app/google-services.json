@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "470651353684",
+    "project_id": "padelapp-f3df2",
+    "storage_bucket": "padelapp-f3df2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470651353684:android:9e3619e0cb8f4d768ecbc1",
+        "android_client_info": {
+          "package_name": "com.example.intro_mobile_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCz7Zelaxz3ggHKLDJ5Z5xwlS8Y8zRAKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
