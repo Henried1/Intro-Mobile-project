@@ -39,7 +39,7 @@ TextField textField(String text, IconData icon, bool isPasswordType,
   );
 }
 
-Container signIn_SignUpButton(
+Container signInSignUpButton(
     BuildContext context, bool isLogin, Function onTap) {
   return Container(
     width: MediaQuery.of(context).size.width,
@@ -50,11 +50,6 @@ Container signIn_SignUpButton(
       onPressed: () {
         onTap();
       },
-      child: Text(
-        isLogin ? 'LOGIN IN' : 'LOG IN',
-        style: const TextStyle(
-            color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16),
-      ),
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.resolveWith((states) {
           if (states.contains(MaterialState.pressed)) {
@@ -64,6 +59,11 @@ Container signIn_SignUpButton(
         }),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+      ),
+      child: Text(
+        isLogin ? 'LOGIN IN' : 'CREATE ACCOUNT',
+        style: const TextStyle(
+            color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16),
       ),
     ),
   );
