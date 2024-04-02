@@ -36,7 +36,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     SizedBox(
                       height: 30,
                     ),
-                    textField("Enter Username", Icons.verified_user, false,
+                    textField("Enter Username", Icons.person_2_outlined, false,
                         emailController),
                     SizedBox(
                       height: 30,
