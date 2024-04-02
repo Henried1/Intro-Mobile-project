@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/screens/signup_screen.dart';
@@ -32,24 +33,32 @@ class _SignInScreenState extends State<SignInScreen> {
                       20, MediaQuery.of(context).size.height * 0.2, 20, 0),
                   child: Column(children: <Widget>[
                     logoWidget("assets/images/logo.png"),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     textField("Enter Username", Icons.person_2_outlined, false,
                         emailController),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     textField(
                         "Enter password", Icons.lock, true, passwordController),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    signIn_SignUpButton(context, false, () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeScreen()));
+                    signInSignUpButton(context, true, () {
+                      FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                              email: emailController.text,
+                              password: passwordController.text)
+                          .then((value) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomeScreen()));
+                      }).onError((error, stackTrace) {
+                        print("Error ${error.toString()}");
+                      });
                     }),
                     signUpOption()
                   ])),
@@ -62,8 +71,8 @@ class _SignInScreenState extends State<SignInScreen> {
           style: TextStyle(color: Colors.white70)),
       GestureDetector(
         onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const SignUpScreen()));
         },
         child: const Text(
           " Sign up",

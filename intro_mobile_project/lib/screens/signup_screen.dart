@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/utils/color_utils.dart';
@@ -32,29 +33,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding: EdgeInsets.fromLTRB(
                       20, MediaQuery.of(context).size.height * 0.2, 20, 0),
                   child: Column(children: <Widget>[
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     textField("Enter Username", Icons.person_2_outlined, false,
                         usernameController),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     textField("Enter Email adress", Icons.email_outlined, false,
                         emailController),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     textField(
                         "Enter Password", Icons.lock, true, passwordController),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    signIn_SignUpButton(context, false, () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeScreen()));
+                    signInSignUpButton(context, false, () {
+                      FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                              email: emailController.text,
+                              password: passwordController.text)
+                          .then((value) {
+                        print("Succesful account creation");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomeScreen()));
+                      }).onError((error, stackTrace) {
+                        print("Error ${error.toString()}");
+                      });
                     }),
                   ])),
             )));
