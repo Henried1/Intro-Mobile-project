@@ -69,7 +69,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       FirebaseFirestore.instance
                           .collection("Users")
                           .doc(emailController.text)
-                          .set({'username: ': emailController.text.split('@')});
+                          .set({
+                        'username: ': emailController.text.split('@')[0]
+                      });
                     }),
                   ])),
             )));
