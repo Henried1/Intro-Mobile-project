@@ -15,28 +15,55 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false, // This removes the back button
         title: Text('Paddle App'),
-        backgroundColor: Colors.redAccent,
+        backgroundColor: Color.fromARGB(255, 245, 90, 79),
       ),
       backgroundColor: Colors.white,
-      body: Container(
-        alignment: Alignment.topRight,
-        child: Padding(
-          padding: EdgeInsets.only(top: 0.0),
-          child: ElevatedButton(
-            child: const Text("log out"),
-            onPressed: () {
-              FirebaseAuth.instance.signOut().then((value) {
-                print("Logged out");
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SignInScreen()),
-                );
-              });
-            },
+      body: Column(
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: EdgeInsets.only(top: 20.0, right: 20.0),
+              child: ElevatedButton(
+                child: const Text("log out"),
+                onPressed: () {
+                  FirebaseAuth.instance.signOut().then((value) {
+                    print("Logged out");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignInScreen()),
+                    );
+                  });
+                },
+              ),
+            ),
           ),
-        ),
+          Container(
+            margin: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              color: Colors.redAccent, // Set the color of the square
+              borderRadius:
+                  BorderRadius.circular(20.0), // Make the square rounded
+            ),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(
+                Icons.sports_tennis_rounded,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              const Text(
+                'Book a field',
+                style: TextStyle(fontSize: 24.0, color: Colors.white),
+              ),
+            ]),
+          ),
+        ],
       ),
       bottomNavigationBar:
           customNavBar.NavigationBar(), // Use NavigationBar widget
