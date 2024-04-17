@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/screens/signup_screen.dart';
 import 'package:intro_mobile_project/utils/color_utils.dart';
-import 'package:intro_mobile_project/widgets/Registratie&InlogWidget.dart';
+import 'package:intro_mobile_project/widgets/Registration&InlogWidget.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
