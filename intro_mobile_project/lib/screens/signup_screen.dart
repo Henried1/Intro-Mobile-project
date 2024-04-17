@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
+import 'package:intro_mobile_project/service/database.dart';
 import 'package:intro_mobile_project/utils/color_utils.dart';
 import 'package:intro_mobile_project/widgets/Registratie&InlogWidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -52,7 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    signInSignUpButton(context, false, () {
+                    signInSignUpButton(context, false, () async {
                       FirebaseAuth.instance
                           .createUserWithEmailAndPassword(
                               email: emailController.text,
@@ -66,13 +67,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }).onError((error, stackTrace) {
                         print("Error ${error.toString()}");
                       });
-                      FirebaseFirestore.instance
-                          .collection("Users")
-                          .doc(emailController.text)
-                          .set({
-                        'Email: ': emailController.text,
-                        'Username: ': usernameController.text,
-                      });
+                      await FirestoreService().addUser(
+                          emailController.text, usernameController.text);
                     }),
                   ])),
             )));
