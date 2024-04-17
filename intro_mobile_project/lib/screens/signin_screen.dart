@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/screens/signup_screen.dart';
 import 'package:intro_mobile_project/utils/color_utils.dart';
-import 'package:intro_mobile_project/widgets/widget.dart';
+import 'package:intro_mobile_project/widgets/Registratie&InlogWidget.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -23,9 +23,9 @@ class _SignInScreenState extends State<SignInScreen> {
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
                 gradient: LinearGradient(colors: [
-              hexStringToColor("CB2B93"),
-              hexStringToColor("9546C4"),
-              hexStringToColor("5E61F4")
+              hexStringToColor("FF0000"),
+              hexStringToColor("FF0000"),
+              hexStringToColor("FF0000")
             ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
             child: SingleChildScrollView(
               child: Padding(

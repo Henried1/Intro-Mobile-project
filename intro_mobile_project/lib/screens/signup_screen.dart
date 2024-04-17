@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/utils/color_utils.dart';
-import 'package:intro_mobile_project/widgets/widget.dart';
+import 'package:intro_mobile_project/widgets/Registratie&InlogWidget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -24,9 +25,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
                 gradient: LinearGradient(colors: [
-              hexStringToColor("CB2B93"),
-              hexStringToColor("9546C4"),
-              hexStringToColor("5E61F4")
+              hexStringToColor("FF0000"),
+              hexStringToColor("FF0000"),
+              hexStringToColor("FF0000")
             ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
             child: SingleChildScrollView(
               child: Padding(
@@ -64,6 +65,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 builder: (context) => const HomeScreen()));
                       }).onError((error, stackTrace) {
                         print("Error ${error.toString()}");
+                      });
+                      FirebaseFirestore.instance
+                          .collection("Users")
+                          .doc(emailController.text)
+                          .set({
+                        'Email: ': emailController.text,
+                        'Username: ': usernameController.text,
                       });
                     }),
                   ])),
