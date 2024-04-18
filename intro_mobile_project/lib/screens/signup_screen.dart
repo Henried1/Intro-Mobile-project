@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/service/database.dart';
 import 'package:intro_mobile_project/utils/color_utils.dart';
-import 'package:intro_mobile_project/widgets/Registratie&InlogWidget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intro_mobile_project/widgets/Registration&InlogWidget.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
