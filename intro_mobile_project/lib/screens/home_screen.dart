@@ -4,7 +4,6 @@ import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
     as customNavBar;
 import 'package:intro_mobile_project/screens/fields_screen.dart';
-import 'package:intro_mobile_project/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
