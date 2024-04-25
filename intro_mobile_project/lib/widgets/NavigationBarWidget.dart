@@ -19,7 +19,7 @@ class _NavigationBarState extends State<NavigationBar> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProfileScreen(),
+            builder: (context) => ProfileScreenWidget(),
           ),
         );
         break;
