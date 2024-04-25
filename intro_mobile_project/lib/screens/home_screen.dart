@@ -6,7 +6,7 @@ import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
 import 'package:intro_mobile_project/screens/fields_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: const customNavBar.NavigationBar(),
+      bottomNavigationBar: customNavBar.NavigationBar(),
     );
   }
 }
