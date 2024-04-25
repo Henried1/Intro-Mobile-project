@@ -3,6 +3,8 @@
 // import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 
+import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
+    as customNavBar;
 // import 'profile_screen_model.dart';
 // export 'profile_screen_model.dart';
 
@@ -114,6 +116,7 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
             ],
           ),
         ),
+        bottomNavigationBar: customNavBar.NavigationBar(),
       ),
     );
   }
