@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intro_mobile_project/screens/field_details_screen.dart';
 
 class FieldsScreen extends StatefulWidget {
   const FieldsScreen({super.key});
@@ -65,6 +65,15 @@ class _FieldScreens extends State<FieldsScreen> {
                         color: Colors.grey,
                       ),
                     ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FieldDetailScreen(
+                                  fieldName: fields[index],
+                                  fieldImage: fieldImages[index],
+                                  fieldLocation: fieldLocations[index])));
+                    },
                   )
                 ],
               ),
