@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/profile_screen.dart';
 
 class NavigationBar extends StatefulWidget {
-  const NavigationBar({super.key});
-
   @override
   _NavigationBarState createState() => _NavigationBarState();
 }
@@ -21,7 +19,7 @@ class _NavigationBarState extends State<NavigationBar> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProfileScreen(),
+            builder: (context) => ProfileScreenWidget(),
           ),
         );
         break;
@@ -47,7 +45,7 @@ class _NavigationBarState extends State<NavigationBar> {
       ],
       onTap: _onItemTapped,
       selectedItemColor: Colors.white,
-      backgroundColor: const Color.fromARGB(255, 245, 90, 79),
+      backgroundColor: Color.fromARGB(255, 245, 90, 79),
       unselectedItemColor: Colors.black,
       currentIndex: _selectedIndex,
     );
