@@ -20,6 +20,7 @@ class _NavigationBarState extends State<NavigationBar> {
           context,
           MaterialPageRoute(
             builder: (context) => ProfileScreenWidget(),
+>>>>>>>>> Temporary merge branch 2
           ),
         );
         break;
