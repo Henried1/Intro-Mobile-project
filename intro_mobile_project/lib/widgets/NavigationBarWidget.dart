@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/screens/profile_screen.dart';
 
 class NavigationBar extends StatefulWidget {
@@ -13,7 +14,16 @@ class _NavigationBarState extends State<NavigationBar> {
     setState(() {
       _selectedIndex = index;
     });
-
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(),
+          ),
+        );
+        break;
+    }
     switch (index) {
       case 2:
         Navigator.push(
