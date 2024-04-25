@@ -8,7 +8,8 @@ class FieldDetailScreen extends StatelessWidget {
   final String fieldImage;
   final String fieldLocation;
 
-  FieldDetailScreen({
+  const FieldDetailScreen({
+    super.key,
     required this.fieldName,
     required this.fieldImage,
     required this.fieldLocation,
@@ -92,7 +93,7 @@ class FieldDetailScreen extends StatelessWidget {
                           foregroundColor: Colors.redAccent,
                           backgroundColor: Colors.white,
                         ),
-                        child: Text('Book a field'),
+                        child: const Text('Book a field'),
                       ))
                 ],
               ));
