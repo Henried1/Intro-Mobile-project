@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BookingPage extends StatefulWidget {
   @override
@@ -82,18 +83,18 @@ class _BookingPageState extends State<BookingPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            floatingActionButtonTheme: FloatingActionButtonThemeData(
-              foregroundColor: Colors.white, // Change text color here
-            ),
-          ),
-          child: FloatingActionButton.extended(
-            onPressed: () {},
-            label: Text('Book now'),
-            icon: Icon(Icons.book),
-            backgroundColor: Color.fromARGB(255, 245, 90, 79),
-          ),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            CollectionReference bookings =
+                FirebaseFirestore.instance.collection('Reservations');
+            bookings.add({
+              'date': _focusedDay,
+              'time': _currentIndex,
+            }).then((value) => print("Reservation Added"));
+          },
+          label: Text('Book now'),
+          icon: Icon(Icons.book),
+          backgroundColor: Color.fromARGB(255, 245, 90, 79),
         ),
       ),
     );
