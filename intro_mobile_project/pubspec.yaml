@@ -23,4 +23,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/
     - assets/images/
+    - assets/images/logo.png
+    - assets/images/tennis-field-outdoor-illustration-background.jpg

@@ -73,7 +73,7 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                     fit: BoxFit.fitWidth,
                     alignment: AlignmentDirectional(0.0, -1.0),
                     image: Image.asset(
-                      'images/tennis-field-outdoor-illustration-background.jpg',
+                      'assets/images/tennis-field-outdoor-illustration-background.jpg',
                     ).image,
                   ),
                   shape: BoxShape.rectangle,
@@ -94,7 +94,7 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(50.0),
                       child: Image.asset(
-                        'images/logo.png',
+                        'assets/images/logo.png',
                         width: 150.0,
                         height: 156.0,
                         fit: BoxFit.cover,
