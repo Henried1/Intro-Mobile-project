@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/service/database.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BookingPage extends StatefulWidget {
   @override
@@ -11,7 +11,6 @@ class BookingPage extends StatefulWidget {
 
 class _BookingPageState extends State<BookingPage> {
   String? userEmail = FirebaseAuth.instance.currentUser?.email;
-
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime _currentDay = DateTime.now();
@@ -74,7 +73,7 @@ class _BookingPageState extends State<BookingPage> {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      '${index + 10}:00 ${index + 10 > 11 ? "PM" : "AM"}',
+                      '${index + 10}:00',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: _currentIndex == index ? Colors.white : null,
@@ -104,7 +103,30 @@ class _BookingPageState extends State<BookingPage> {
                   _focusedDay.month, _focusedDay.day, selectedTime);
               if (userEmail != null) {
                 FirestoreService()
-                    .addBooking(userEmail!, bookingDateTime, selectedTime);
+                    .addBooking(userEmail!, bookingDateTime, selectedTime)
+                    .then((_) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Success"),
+                        content: Text("Your booking was successful."),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()),
+                                (route) => false,
+                              );
+                            },
+                            child: Text("OK"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                });
               } else {
                 showDialog(
                   context: context,
