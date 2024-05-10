@@ -50,10 +50,58 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
             style: TextStyle(color: Colors.white),
           ),
           actions: [
-            Icon(
-              Icons.settings_outlined,
-              color: Color.fromARGB(255, 177, 177, 177),
-              size: 30.0,
+            //   Icon(
+            //     Icons.settings_outlined,
+            //     color: Color.fromARGB(255, 177, 177, 177),
+            //     size: 30.0,
+            //   ),
+            // ],
+            PopupMenuButton<String>(
+              icon: Icon(
+                Icons.more_vert,
+                color: Colors.white,
+                size: 30.0,
+              ),
+              offset: Offset(0, 60),
+              onSelected: (String result) {
+                switch (result) {
+                  case 'About':
+                    showAboutDialog(
+                      context: context,
+                      applicationName: 'Paddle App',
+                      applicationVersion: '1.0.0',
+                    );
+                    break;
+                  case 'Save':
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Saved!'),
+                      ),
+                    );
+                    break;
+                  case 'Quit':
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Quit!'),
+                      ),
+                    );
+                    break;
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'About',
+                  child: Text('About'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'Save',
+                  child: Text('Save'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'Quit',
+                  child: Text('Quit'),
+                ),
+              ],
             ),
           ],
           centerTitle: false,
