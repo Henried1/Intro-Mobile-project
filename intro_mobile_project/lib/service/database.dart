@@ -10,11 +10,13 @@ class FirestoreService {
     });
   }
 
-  Future<void> addBooking(String email, DateTime date, int time) async {
+  Future<void> addBooking(
+      String email, DateTime date, int time, int players) async {
     await _db.collection("Reservations").add({
       'Email: ': email,
       'Date: ': date,
       'Time: ': time,
+      'Players': players,
     });
   }
 }

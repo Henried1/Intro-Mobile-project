@@ -18,6 +18,7 @@ class _BookingPageState extends State<BookingPage> {
   bool _isWeekend = false;
   bool _dateSelected = false;
   bool _timeSelected = false;
+  int _selectedPlayers = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -26,99 +27,161 @@ class _BookingPageState extends State<BookingPage> {
         title: Text('Booking a field'),
         backgroundColor: Color.fromARGB(255, 245, 90, 79),
       ),
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverToBoxAdapter(
-            child: Column(
-              children: <Widget>[
-                _buildCalendar(),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
-                  child: Center(
-                    child: Text(
-                      'Select a time slot',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+      body: Column(
+        children: [
+          Expanded(
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: <Widget>[
+                      _buildCalendar(),
+                      const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 25),
+                        child: Center(
+                          child: Text(
+                            'Select a time slot',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
+                  ),
+                ),
+                SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return InkWell(
+                        splashColor: Colors.transparent,
+                        onTap: () {
+                          setState(() {
+                            _currentIndex = index;
+                            _timeSelected = true;
+                          });
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: _currentIndex == index
+                                  ? Colors.white
+                                  : Color.fromARGB(255, 245, 90, 79),
+                            ),
+                            borderRadius: BorderRadius.circular(15),
+                            color: _currentIndex == index
+                                ? Color.fromARGB(255, 245, 90, 79)
+                                : null,
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            '${10 + (index * 1.5).floor()}:${((index * 1.5) % 1 > 0) ? "30" : "00"}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  _currentIndex == index ? Colors.white : null,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    childCount: 8,
+                  ),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    childAspectRatio: 1.5,
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: <Widget>[
+                      const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        child: Center(
+                          child: Text(
+                            'Select players',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 50, // Adjust this value as needed
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DropdownButton<int>(
+                            value: _selectedPlayers,
+                            items: <int>[2, 3, 4].map((int value) {
+                              return DropdownMenuItem<int>(
+                                value: value,
+                                child: Text('$value players'),
+                              );
+                            }).toList(),
+                            onChanged: (int? newValue) {
+                              setState(() {
+                                _selectedPlayers = newValue!;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          SliverGrid(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return InkWell(
-                  splashColor: Colors.transparent,
-                  onTap: () {
-                    setState(() {
-                      _currentIndex = index;
-                      _timeSelected = true;
-                    });
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: _currentIndex == index
-                            ? Colors.white
-                            : Color.fromARGB(255, 245, 90, 79),
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                      color: _currentIndex == index
-                          ? Color.fromARGB(255, 245, 90, 79)
-                          : null,
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      '${index + 10}:00',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: _currentIndex == index ? Colors.white : null,
-                      ),
-                    ),
-                  ),
-                );
-              },
-              childCount: 8,
-            ),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              childAspectRatio: 1.5,
-            ),
-          ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            if (_dateSelected && _timeSelected) {
-              int selectedTime =
-                  _currentIndex != null ? _currentIndex! + 10 : 0;
-              DateTime bookingDateTime = DateTime(_focusedDay.year,
-                  _focusedDay.month, _focusedDay.day, selectedTime);
-              if (userEmail != null) {
-                FirestoreService()
-                    .addBooking(userEmail!, bookingDateTime, selectedTime)
-                    .then((_) {
+          FloatingActionButton.extended(
+            onPressed: () {
+              if (_dateSelected && _timeSelected) {
+                int selectedTime =
+                    _currentIndex != null ? _currentIndex! + 10 : 0;
+                DateTime bookingDateTime = DateTime(_focusedDay.year,
+                    _focusedDay.month, _focusedDay.day, selectedTime);
+                if (userEmail != null) {
+                  FirestoreService()
+                      .addBooking(userEmail!, bookingDateTime, selectedTime,
+                          _selectedPlayers)
+                      .then((_) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Success"),
+                          content: Text("Your booking was successful."),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeScreen()),
+                                  (route) => false,
+                                );
+                              },
+                              child: Text("OK"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  });
+                } else {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text("Success"),
-                        content: Text("Your booking was successful."),
+                        title: Text("Error"),
+                        content: Text("User email is null."),
                         actions: [
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) => HomeScreen()),
-                                (route) => false,
-                              );
+                              Navigator.of(context).pop();
                             },
                             child: Text("OK"),
                           ),
@@ -126,14 +189,14 @@ class _BookingPageState extends State<BookingPage> {
                       );
                     },
                   );
-                });
+                }
               } else {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: Text("Error"),
-                      content: Text("User email is null."),
+                      content: Text("Please select both date and time."),
                       actions: [
                         TextButton(
                           onPressed: () {
@@ -146,30 +209,14 @@ class _BookingPageState extends State<BookingPage> {
                   },
                 );
               }
-            } else {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text("Error"),
-                    content: Text("Please select both date and time."),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text("OK"),
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
-          },
-          label: Text('Book now'),
-          icon: Icon(Icons.book),
-          backgroundColor: Color.fromARGB(255, 245, 90, 79),
-        ),
+            },
+            label: Text('Book now'),
+            icon: Icon(Icons.book),
+            backgroundColor: Color.fromARGB(255, 245, 90, 79),
+          ),
+          SizedBox(
+              height: 16), // Add some space between the FAB and the bottom edge
+        ],
       ),
     );
   }

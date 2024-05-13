@@ -61,7 +61,7 @@ Container signInSignUpButton(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
       ),
       child: Text(
-        isLogin ? 'LOGIN IN' : 'CREATE ACCOUNT',
+        isLogin ? 'LOGIN' : 'CREATE ACCOUNT',
         style: const TextStyle(
             color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16),
       ),
