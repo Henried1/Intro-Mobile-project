@@ -25,7 +25,7 @@ class FieldDetailScreen extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(fieldImage, fit: BoxFit.cover),
+            child: Image.network(fieldImage, fit: BoxFit.cover),
           ),
           buttonArrow(context),
           scroll(),
@@ -80,6 +80,8 @@ class FieldDetailScreen extends StatelessWidget {
                       controller: scrollController,
                     ),
                   ),
+                  fieldNameWidget(),
+                  fieldLocationWidget(),
                   Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: ElevatedButton(
@@ -94,9 +96,25 @@ class FieldDetailScreen extends StatelessWidget {
                           backgroundColor: Colors.white,
                         ),
                         child: const Text('Book a field'),
-                      ))
+                      )),
                 ],
               ));
         }));
+  }
+
+  Widget fieldNameWidget() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Text('Field: $fieldName',
+          style: TextStyle(color: Colors.white, fontSize: 24)),
+    );
+  }
+
+  Widget fieldLocationWidget() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Text('Field location: $fieldLocation',
+          style: TextStyle(color: Colors.white, fontSize: 24)),
+    );
   }
 }
