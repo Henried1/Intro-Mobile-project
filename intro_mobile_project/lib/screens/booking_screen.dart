@@ -5,6 +5,11 @@ import 'package:intro_mobile_project/service/database.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class BookingPage extends StatefulWidget {
+  final String fieldName;
+  final String fieldLocation;
+
+  BookingPage({required this.fieldName, this.fieldLocation = ""});
+
   @override
   _BookingPageState createState() => _BookingPageState();
 }
@@ -55,14 +60,27 @@ class _BookingPageState extends State<BookingPage> {
                 SliverGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
+                      DateTime baseTime = DateTime(_focusedDay.year,
+                          _focusedDay.month, _focusedDay.day, 10, 0);
+                      DateTime slotTime =
+                          baseTime.add(Duration(minutes: 90 * index));
+
+                      // Format the time as HH:mm
+                      String timeText =
+                          '${slotTime.hour.toString().padLeft(2, '0')}:${slotTime.minute.toString().padLeft(2, '0')}';
+
+                      bool isPast = slotTime.isBefore(DateTime.now());
+
                       return InkWell(
                         splashColor: Colors.transparent,
-                        onTap: () {
-                          setState(() {
-                            _currentIndex = index;
-                            _timeSelected = true;
-                          });
-                        },
+                        onTap: isPast
+                            ? null
+                            : () {
+                                setState(() {
+                                  _currentIndex = index;
+                                  _timeSelected = true;
+                                });
+                              },
                         child: Container(
                           margin: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
@@ -74,21 +92,22 @@ class _BookingPageState extends State<BookingPage> {
                             borderRadius: BorderRadius.circular(15),
                             color: _currentIndex == index
                                 ? Color.fromARGB(255, 245, 90, 79)
-                                : null,
+                                : (isPast ? Colors.grey : null),
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            '${10 + (index * 1.5).floor()}:${((index * 1.5) % 1 > 0) ? "30" : "00"}',
+                            timeText,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color:
-                                  _currentIndex == index ? Colors.white : null,
+                              color: _currentIndex == index || isPast
+                                  ? Colors.white
+                                  : null,
                             ),
                           ),
                         ),
                       );
                     },
-                    childCount: 8,
+                    childCount: 9, // 9 intervals from 10:00 to 22:30
                   ),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 4,
@@ -140,14 +159,36 @@ class _BookingPageState extends State<BookingPage> {
           FloatingActionButton.extended(
             onPressed: () {
               if (_dateSelected && _timeSelected) {
-                int selectedTime =
-                    _currentIndex != null ? _currentIndex! + 10 : 0;
-                DateTime bookingDateTime = DateTime(_focusedDay.year,
-                    _focusedDay.month, _focusedDay.day, selectedTime);
+                DateTime baseTime = DateTime(_focusedDay.year,
+                    _focusedDay.month, _focusedDay.day, 10, 0);
+                DateTime bookingDateTime =
+                    baseTime.add(Duration(minutes: 90 * _currentIndex!));
+
+                if (bookingDateTime.isBefore(DateTime.now())) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Error"),
+                        content: Text("Cannot select a time in the past."),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("OK"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  return;
+                }
+
                 if (userEmail != null) {
                   FirestoreService()
-                      .addBooking(userEmail!, bookingDateTime, selectedTime,
-                          _selectedPlayers)
+                      .addBooking(userEmail!, bookingDateTime, _selectedPlayers,
+                          widget.fieldName, widget.fieldLocation)
                       .then((_) {
                     showDialog(
                       context: context,
@@ -214,8 +255,7 @@ class _BookingPageState extends State<BookingPage> {
             icon: Icon(Icons.book),
             backgroundColor: Color.fromARGB(255, 245, 90, 79),
           ),
-          SizedBox(
-              height: 16), // Add some space between the FAB and the bottom edge
+          SizedBox(height: 16),
         ],
       ),
     );
