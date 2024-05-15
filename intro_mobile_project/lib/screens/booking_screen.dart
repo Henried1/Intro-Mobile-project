@@ -65,7 +65,6 @@ class _BookingPageState extends State<BookingPage> {
                       DateTime slotTime =
                           baseTime.add(Duration(minutes: 90 * index));
 
-                      // Format the time as HH:mm
                       String timeText =
                           '${slotTime.hour.toString().padLeft(2, '0')}:${slotTime.minute.toString().padLeft(2, '0')}';
 
@@ -131,7 +130,7 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                       ),
                       Container(
-                        height: 50, // Adjust this value as needed
+                        height: 50,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: DropdownButton<int>(

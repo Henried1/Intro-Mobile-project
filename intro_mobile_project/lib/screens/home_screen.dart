@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intro_mobile_project/screens/reservationsList_screen.dart';
 import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
     as customNavBar;
@@ -69,6 +70,39 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Text(
                     'Book a field',
+                    style: TextStyle(fontSize: 24.0, color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ReservationListScreen()),
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                color: Colors.redAccent,
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.checklist_rounded,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    'View your reservations',
                     style: TextStyle(fontSize: 24.0, color: Colors.white),
                   ),
                 ],
