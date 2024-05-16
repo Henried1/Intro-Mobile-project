@@ -1,14 +1,9 @@
-// import '/flutter_flow/flutter_flow_theme.dart';
-// import '/flutter_flow/flutter_flow_util.dart';
-// import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/signin_screen.dart';
 
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
     as customNavBar;
-// import 'profile_screen_model.dart';
-// export 'profile_screen_model.dart';
 
 class ProfileScreenWidget extends StatefulWidget {
   const ProfileScreenWidget({super.key});
@@ -43,11 +38,11 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
       //     : FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 245, 90, 79),
           automaticallyImplyLeading: false,
-          title: Text(
+          title: const Text(
             'Profile',
             style: TextStyle(color: Colors.white),
           ),
@@ -59,12 +54,12 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
             //   ),
             // ],
             PopupMenuButton<String>(
-              icon: Icon(
+              icon: const Icon(
                 Icons.more_vert,
                 color: Colors.white,
                 size: 30.0,
               ),
-              offset: Offset(0, 60),
+              offset: const Offset(0, 60),
               onSelected: (String result) async {
                 switch (result) {
                   case 'About':
@@ -127,7 +122,7 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                 width: 450.0,
                 height: 133.0,
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 255, 255, 255),
+                  color: Colors.white,
                   image: DecorationImage(
                     fit: BoxFit.fitWidth,
                     alignment: AlignmentDirectional(0.0, -1.0),
@@ -143,10 +138,10 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                     width: MediaQuery.sizeOf(context).width * 0.3,
                     height: MediaQuery.sizeOf(context).width * 0.3,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 255, 255, 255),
+                      color: Colors.white,
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: Color.fromARGB(255, 255, 255, 255),
+                        color: Colors.white,
                         width: 5.0,
                       ),
                     ),
