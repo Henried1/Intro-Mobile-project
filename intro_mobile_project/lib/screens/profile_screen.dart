@@ -1,7 +1,9 @@
 // import '/flutter_flow/flutter_flow_theme.dart';
 // import '/flutter_flow/flutter_flow_util.dart';
 // import '/flutter_flow/flutter_flow_widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intro_mobile_project/screens/signin_screen.dart';
 
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
     as customNavBar;
@@ -63,7 +65,7 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                 size: 30.0,
               ),
               offset: Offset(0, 60),
-              onSelected: (String result) {
+              onSelected: (String result) async {
                 switch (result) {
                   case 'About':
                     showAboutDialog(
@@ -79,11 +81,20 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                       ),
                     );
                     break;
-                  case 'Quit':
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Quit!'),
-                      ),
+                  // case 'Quit':
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(
+                  //       content: Text('Quit!'),
+                  //     ),
+                  //   );
+                  //   break;
+                  case 'Log out':
+                    await FirebaseAuth.instance.signOut();
+                    print("Logged out");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignInScreen()),
                     );
                     break;
                 }
@@ -95,11 +106,11 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                 ),
                 const PopupMenuItem<String>(
                   value: 'Save',
-                  child: Text('Save'),
+                  child: Text('Save*'),
                 ),
                 const PopupMenuItem<String>(
-                  value: 'Quit',
-                  child: Text('Quit'),
+                  value: 'Log out',
+                  child: Text('Log out'),
                 ),
               ],
             ),
