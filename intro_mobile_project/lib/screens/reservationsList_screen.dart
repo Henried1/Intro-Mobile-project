@@ -36,6 +36,9 @@ class _ReservationListScreen extends State<ReservationListScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        /* Text(data['?Username'],
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold)),*/
                         Text(
                           data['Field'],
                           style: TextStyle(
