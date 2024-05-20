@@ -10,8 +10,35 @@ class FirestoreService {
     });
   }
 
-  Future<void> addBooking(String email, DateTime date, int players,
-      String fieldName, String fieldLocation) async {
+  final CollectionReference bookingCollection =
+      FirebaseFirestore.instance.collection('bookings');
+
+  Stream<QuerySnapshot> getBookedSlots() {
+    DateTime today = DateTime.now();
+    DateTime end = DateTime(today.year, today.month, today.day, 23, 59, 59);
+    return _db
+        .collection('bookings')
+        .where('dateTime', isGreaterThanOrEqualTo: today)
+        .where('dateTime', isLessThanOrEqualTo: end)
+        .snapshots();
+  }
+
+  Future<bool> addBooking(String email, DateTime date, int players,
+      String fieldName, String fieldLocation, int timeslotIndex) async {
+    String bookingId = "${date.toIso8601String()}_$timeslotIndex$fieldName";
+    DocumentSnapshot bookingSnapshot =
+        await _db.collection("BookedSlots").doc(bookingId).get();
+
+    if (bookingSnapshot.exists) {
+      return false;
+    }
+
+    await _db.collection("BookedSlots").doc(bookingId).set({
+      'Email: ': email,
+      'Date: ': date,
+      'TimeslotIndex': timeslotIndex,
+    });
+
     await _db.collection("Reservations").add({
       'Email: ': email,
       'Date: ': date,
@@ -19,5 +46,7 @@ class FirestoreService {
       'Field': fieldName,
       'Location': fieldLocation ?? "Unknown Location",
     });
+
+    return true;
   }
 }

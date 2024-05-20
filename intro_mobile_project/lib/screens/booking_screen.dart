@@ -4,6 +4,8 @@ import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/service/database.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class BookingPage extends StatefulWidget {
   final String fieldName;
   final String fieldLocation;
@@ -24,6 +26,21 @@ class _BookingPageState extends State<BookingPage> {
   bool _dateSelected = false;
   bool _timeSelected = false;
   int _selectedPlayers = 2;
+  List<String> _bookedSlots = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchBookedSlots();
+  }
+
+  void _fetchBookedSlots() {
+    FirestoreService().getBookedSlots().listen((QuerySnapshot snapshot) {
+      setState(() {
+        _bookedSlots = snapshot.docs.map((doc) => doc.id).toList();
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,64 +165,84 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Widget _buildTimeSlotsGrid() {
-    return SliverGrid(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          DateTime baseTime = DateTime(
-              _focusedDay.year, _focusedDay.month, _focusedDay.day, 10, 0);
-          DateTime slotTime = baseTime.add(Duration(minutes: 30 * index));
-
-          String timeText =
-              '${slotTime.hour.toString().padLeft(2, '0')}:${slotTime.minute.toString().padLeft(2, '0')}';
-
-          bool isPast = slotTime.isBefore(DateTime.now());
-          bool isGreyedOut = _selectedTimeSlotIndex != null &&
-              index >= _selectedTimeSlotIndex! &&
-              index <= _selectedTimeSlotIndex! + 2;
-
-          return InkWell(
-            splashColor: Colors.transparent,
-            onTap: isPast || isGreyedOut
-                ? null
-                : () {
-                    setState(() {
-                      _selectedTimeSlotIndex = index;
-                      _timeSelected = true;
-                    });
-                  },
-            child: Container(
-              margin: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: _selectedTimeSlotIndex == index
-                      ? Colors.white
-                      : Color.fromARGB(255, 245, 90, 79),
-                ),
-                borderRadius: BorderRadius.circular(15),
-                color: _selectedTimeSlotIndex == index
-                    ? Color.fromARGB(255, 245, 90, 79)
-                    : (isPast || isGreyedOut ? Colors.grey : null),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                timeText,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color:
-                      _selectedTimeSlotIndex == index || isPast || isGreyedOut
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirestoreService().getBookedSlots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return SliverToBoxAdapter(
+            child: Text('Something went wrong'),
+          );
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return SliverToBoxAdapter(
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        _bookedSlots = snapshot.data!.docs.map((doc) => doc.id).toList();
+        return SliverGrid(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              DateTime baseTime = DateTime(
+                  _focusedDay.year, _focusedDay.month, _focusedDay.day, 10, 0);
+              DateTime slotTime = baseTime.add(Duration(minutes: 30 * index));
+              String timeText =
+                  '${slotTime.hour.toString().padLeft(2, '0')}:${slotTime.minute.toString().padLeft(2, '0')}';
+              bool isPast = slotTime.isBefore(DateTime.now());
+              String slotId =
+                  "${slotTime.year.toString().padLeft(4, '0')}-${slotTime.month.toString().padLeft(2, '0')}-${slotTime.day.toString().padLeft(2, '0')}T${slotTime.hour.toString().padLeft(2, '0')}:${slotTime.minute.toString().padLeft(2, '0')}_$index";
+              bool isBooked = _bookedSlots.contains(slotId);
+              bool isGreyedOut = _selectedTimeSlotIndex != null &&
+                  index >= _selectedTimeSlotIndex! &&
+                  index <= _selectedTimeSlotIndex! + 2;
+              return InkWell(
+                splashColor: Colors.transparent,
+                onTap: isPast || isGreyedOut || isBooked
+                    ? null
+                    : () {
+                        setState(() {
+                          _selectedTimeSlotIndex = index;
+                          _timeSelected = true;
+                        });
+                      },
+                child: Container(
+                  margin: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _selectedTimeSlotIndex == index
+                          ? Colors.white
+                          : Color.fromARGB(255, 245, 90, 79),
+                    ),
+                    borderRadius: BorderRadius.circular(15),
+                    color: _selectedTimeSlotIndex == index
+                        ? Color.fromARGB(255, 245, 90, 79)
+                        : (isPast || isGreyedOut || isBooked
+                            ? Colors.grey
+                            : null),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    timeText,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: _selectedTimeSlotIndex == index ||
+                              isPast ||
+                              isGreyedOut ||
+                              isBooked
                           ? Colors.white
                           : null,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          );
-        },
-        childCount: 20,
-      ),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        childAspectRatio: 1.5,
-      ),
+              );
+            },
+            childCount: 20,
+          ),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            childAspectRatio: 1.5,
+          ),
+        );
+      },
     );
   }
 
@@ -223,27 +260,31 @@ class _BookingPageState extends State<BookingPage> {
       _showErrorDialog("Please select both date and time.");
       return;
     }
-
     DateTime baseTime =
         DateTime(_focusedDay.year, _focusedDay.month, _focusedDay.day, 10, 0);
     DateTime bookingDateTime =
         baseTime.add(Duration(minutes: 30 * _selectedTimeSlotIndex!));
-
     if (bookingDateTime.isBefore(DateTime.now())) {
       _showErrorDialog("Cannot select a time in the past.");
       return;
     }
-
     if (userEmail == null) {
       _showErrorDialog("User email is null.");
       return;
     }
-
     FirestoreService()
         .addBooking(userEmail!, bookingDateTime, _selectedPlayers,
-            widget.fieldName, widget.fieldLocation)
-        .then((_) {
-      _showSuccessDialog("Your booking was successful.");
+            widget.fieldName, widget.fieldLocation, _selectedTimeSlotIndex!)
+        .then((success) {
+      if (success) {
+        setState(() {
+          _bookedSlots.add(
+              "${bookingDateTime.year.toString().padLeft(4, '0')}-${bookingDateTime.month.toString().padLeft(2, '0')}-${bookingDateTime.day.toString().padLeft(2, '0')}T${bookingDateTime.hour.toString().padLeft(2, '0')}:${bookingDateTime.minute.toString().padLeft(2, '0')}_${_selectedTimeSlotIndex}");
+        });
+        _showSuccessDialog("Your booking was successful.");
+      } else {
+        _showErrorDialog("This slot is already booked.");
+      }
     }).catchError((error) {
       _showErrorDialog("Failed to book the field: $error");
     });

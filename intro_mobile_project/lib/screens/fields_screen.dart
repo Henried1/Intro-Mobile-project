@@ -15,7 +15,7 @@ class _FieldScreens extends State<FieldsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select a Field'),
+        title: const Text('Select a Location'),
         backgroundColor: const Color.fromARGB(255, 245, 90, 79),
       ),
       body: StreamBuilder<QuerySnapshot>(
