@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intro_mobile_project/screens/public_games_screen.dart';
 import 'package:intro_mobile_project/screens/reservationsList_screen.dart';
 import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
     as customNavBar;
 import 'package:intro_mobile_project/screens/fields_screen.dart';
+
+const Color primaryColor = Color.fromARGB(255, 245, 90, 79);
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Paddle App'),
-        backgroundColor: const Color.fromARGB(255, 245, 90, 79),
+        backgroundColor: primaryColor,
       ),
       backgroundColor: Colors.white,
       body: Column(
@@ -55,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
               margin: const EdgeInsets.all(20.0),
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
-                color: Colors.redAccent,
+                color: primaryColor,
                 borderRadius: BorderRadius.circular(20.0),
               ),
               child: const Row(
@@ -88,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
               margin: const EdgeInsets.all(20.0),
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
-                color: Colors.redAccent,
+                color: primaryColor,
                 borderRadius: BorderRadius.circular(20.0),
               ),
               child: const Row(
@@ -103,6 +106,38 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Text(
                     'View your reservations',
+                    style: TextStyle(fontSize: 24.0, color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PublicMatchesScreen()),
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.public_rounded,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    'View Public Games',
                     style: TextStyle(fontSize: 24.0, color: Colors.white),
                   ),
                 ],

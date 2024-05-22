@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/service/database.dart';
 import 'package:table_calendar/table_calendar.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+const Color primaryColor = Color.fromARGB(255, 245, 90, 79);
 
 class BookingPage extends StatefulWidget {
   final String fieldName;
@@ -26,6 +27,7 @@ class _BookingPageState extends State<BookingPage> {
   bool _dateSelected = false;
   bool _timeSelected = false;
   int _selectedPlayers = 2;
+  bool _isPrivateMatch = false;
   List<String> _bookedSlots = [];
 
   @override
@@ -47,7 +49,7 @@ class _BookingPageState extends State<BookingPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Booking a field'),
-        backgroundColor: Color.fromARGB(255, 245, 90, 79),
+        backgroundColor: primaryColor,
       ),
       body: Column(
         children: [
@@ -111,6 +113,19 @@ class _BookingPageState extends State<BookingPage> {
                           ),
                         ),
                       ),
+                      SwitchListTile(
+                        title: Text('Private Match'),
+                        value: _isPrivateMatch,
+                        activeColor:
+                            primaryColor, // Primary color for the thumb
+                        activeTrackColor: primaryColor.withOpacity(
+                            0.5), // Lighter primary color for the track
+                        onChanged: (bool value) {
+                          setState(() {
+                            _isPrivateMatch = value;
+                          });
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -134,7 +149,7 @@ class _BookingPageState extends State<BookingPage> {
       rowHeight: 48,
       calendarStyle: const CalendarStyle(
         todayDecoration: BoxDecoration(
-          color: Color.fromARGB(255, 245, 90, 79),
+          color: primaryColor,
           shape: BoxShape.circle,
         ),
       ),
@@ -210,11 +225,11 @@ class _BookingPageState extends State<BookingPage> {
                     border: Border.all(
                       color: _selectedTimeSlotIndex == index
                           ? Colors.white
-                          : Color.fromARGB(255, 245, 90, 79),
+                          : primaryColor,
                     ),
                     borderRadius: BorderRadius.circular(15),
                     color: _selectedTimeSlotIndex == index
-                        ? Color.fromARGB(255, 245, 90, 79)
+                        ? primaryColor
                         : (isPast || isGreyedOut || isBooked
                             ? Colors.grey
                             : null),
@@ -251,7 +266,7 @@ class _BookingPageState extends State<BookingPage> {
       onPressed: _onBookingButtonPressed,
       label: Text('Book now'),
       icon: Icon(Icons.book),
-      backgroundColor: Color.fromARGB(255, 245, 90, 79),
+      backgroundColor: primaryColor,
     );
   }
 
@@ -273,8 +288,14 @@ class _BookingPageState extends State<BookingPage> {
       return;
     }
     FirestoreService()
-        .addBooking(userEmail!, bookingDateTime, _selectedPlayers,
-            widget.fieldName, widget.fieldLocation, _selectedTimeSlotIndex!)
+        .addBooking(
+            userEmail!,
+            bookingDateTime,
+            _selectedPlayers,
+            widget.fieldName,
+            widget.fieldLocation,
+            _selectedTimeSlotIndex!,
+            _isPrivateMatch)
         .then((success) {
       if (success) {
         setState(() {
@@ -291,18 +312,18 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   void _showErrorDialog(String message) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Error"),
+          title: Text('Error'),
           content: Text(message),
-          actions: [
+          actions: <Widget>[
             TextButton(
+              child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("OK"),
             ),
           ],
         );
@@ -311,21 +332,21 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   void _showSuccessDialog(String message) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Success"),
+          title: Text('Success'),
           content: Text(message),
-          actions: [
+          actions: <Widget>[
             TextButton(
+              child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => HomeScreen()),
                   (route) => false,
                 );
               },
-              child: Text("OK"),
             ),
           ],
         );

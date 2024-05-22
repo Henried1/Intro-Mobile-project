@@ -5,8 +5,8 @@ class FirestoreService {
 
   Future<void> addUser(String email, String username) async {
     await _db.collection("Users").doc(email).set({
-      'Email: ': email,
-      'Username: ': username,
+      'Email': email,
+      'Username': username,
     });
   }
 
@@ -23,8 +23,14 @@ class FirestoreService {
         .snapshots();
   }
 
-  Future<bool> addBooking(String email, DateTime date, int players,
-      String fieldName, String fieldLocation, int timeslotIndex) async {
+  Future<bool> addBooking(
+      String email,
+      DateTime date,
+      int players,
+      String fieldName,
+      String fieldLocation,
+      int timeslotIndex,
+      bool isPrivate) async {
     String bookingId = "${date.toIso8601String()}_$timeslotIndex$fieldName";
     DocumentSnapshot bookingSnapshot =
         await _db.collection("BookedSlots").doc(bookingId).get();
@@ -34,19 +40,44 @@ class FirestoreService {
     }
 
     await _db.collection("BookedSlots").doc(bookingId).set({
-      'Email: ': email,
-      'Date: ': date,
+      'Email': email,
+      'Date': date,
       'TimeslotIndex': timeslotIndex,
     });
 
     await _db.collection("Reservations").add({
-      'Email: ': email,
-      'Date: ': date,
+      'Email': email,
+      'Date': date,
       'Players': players,
+      'CurrentPlayers': [email],
       'Field': fieldName,
-      'Location': fieldLocation ?? "Unknown Location",
+      'Location': fieldLocation,
+      'isPrivate': isPrivate,
     });
 
     return true;
+  }
+
+  Stream<QuerySnapshot> getPublicMatches() {
+    return _db
+        .collection('Reservations')
+        .where('isPrivate', isEqualTo: false)
+        .snapshots();
+  }
+
+  Future<void> joinMatch(String matchId, String userEmail) async {
+    DocumentReference matchRef = _db.collection('Reservations').doc(matchId);
+    await _db.runTransaction((transaction) async {
+      DocumentSnapshot matchSnapshot = await transaction.get(matchRef);
+      if (matchSnapshot.exists) {
+        List currentPlayers = List.from(matchSnapshot['CurrentPlayers'] ?? []);
+        int maxPlayers = matchSnapshot['Players'] ?? 0;
+        if (!currentPlayers.contains(userEmail) &&
+            currentPlayers.length < maxPlayers) {
+          currentPlayers.add(userEmail);
+          transaction.update(matchRef, {'CurrentPlayers': currentPlayers});
+        }
+      }
+    });
   }
 }
