@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intro_mobile_project/service/database.dart';
 
+const primaryColor = Color.fromARGB(255, 245, 90, 79);
+
 class UserGamesTab extends StatelessWidget {
   final FirestoreService _firestoreService = FirestoreService();
   final String? userEmail = FirebaseAuth.instance.currentUser?.email;
@@ -28,6 +30,15 @@ class UserGamesTab extends StatelessWidget {
               title: Text('${data['Field']} (${data['Location']})'),
               subtitle: Text(
                   'Players: ${data['CurrentPlayers'].length}/${data['Players']}'),
+              trailing: ElevatedButton(
+                child: Text('Leave'),
+                onPressed: () {
+                  _firestoreService.leaveMatch(doc.id, userEmail!);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                ),
+              ),
             );
           }).toList(),
         );

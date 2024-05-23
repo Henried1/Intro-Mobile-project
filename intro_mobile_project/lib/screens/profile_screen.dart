@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/signin_screen.dart';
 
-import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
+import 'package:intro_mobile_project/widgets/navigationBarWidget.dart'
     as customNavBar;
 
 class ProfileScreenWidget extends StatefulWidget {

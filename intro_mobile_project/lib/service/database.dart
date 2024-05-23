@@ -87,4 +87,18 @@ class FirestoreService {
       }
     });
   }
+
+  Future<void> leaveMatch(String matchId, String userEmail) async {
+    DocumentReference matchRef = _db.collection('Reservations').doc(matchId);
+    await _db.runTransaction((transaction) async {
+      DocumentSnapshot matchSnapshot = await transaction.get(matchRef);
+      if (matchSnapshot.exists) {
+        List currentPlayers = List.from(matchSnapshot['CurrentPlayers'] ?? []);
+        if (currentPlayers.contains(userEmail)) {
+          currentPlayers.remove(userEmail);
+          transaction.update(matchRef, {'CurrentPlayers': currentPlayers});
+        }
+      }
+    });
+  }
 }

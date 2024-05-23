@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/widgets/publicGamesTabWidget.dart';
 import 'package:intro_mobile_project/widgets/userGamesTabWidget.dart';
 
-import '../widgets/userGamesTabWidget.dart';
+const Color primaryColor = Color.fromARGB(255, 245, 90, 79);
 
 class GamesScreen extends StatelessWidget {
   @override
