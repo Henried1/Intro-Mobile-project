@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/signin_screen.dart';
+import 'package:intro_mobile_project/screens/edit_profile_screen.dart';
 
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
     as customNavBar;
@@ -33,9 +34,14 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // onTap: () => _model.unfocusNode.canRequestFocus
-      //     ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-      //     : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
+          currentFocus.focusedChild!.unfocus();
+        }
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
@@ -44,19 +50,13 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
           automaticallyImplyLeading: false,
           title: const Text(
             'Profile',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
           ),
           actions: [
-            //   Icon(
-            //     Icons.settings_outlined,
-            //     color: Color.fromARGB(255, 177, 177, 177),
-            //     size: 30.0,
-            //   ),
-            // ],
             PopupMenuButton<String>(
               icon: const Icon(
                 Icons.more_vert,
-                color: Colors.white,
+                color: Colors.black,
                 size: 30.0,
               ),
               offset: const Offset(0, 60),
@@ -69,20 +69,14 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                       applicationVersion: '1.0.0',
                     );
                     break;
-                  case 'Save':
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Saved!'),
-                      ),
+                  case 'Edit':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditProfileScreen()),
                     );
                     break;
-                  // case 'Quit':
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(
-                  //       content: Text('Quit!'),
-                  //     ),
-                  //   );
-                  //   break;
+
                   case 'Log out':
                     await FirebaseAuth.instance.signOut();
                     print("Logged out");
@@ -100,8 +94,8 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                   child: Text('About'),
                 ),
                 const PopupMenuItem<String>(
-                  value: 'Save',
-                  child: Text('Save*'),
+                  value: 'Edit',
+                  child: Text('Edit'),
                 ),
                 const PopupMenuItem<String>(
                   value: 'Log out',
