@@ -65,6 +65,13 @@ class FirestoreService {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> getUserMatches(String userEmail) {
+    return _db
+        .collection('Reservations')
+        .where('CurrentPlayers', arrayContains: userEmail)
+        .snapshots();
+  }
+
   Future<void> joinMatch(String matchId, String userEmail) async {
     DocumentReference matchRef = _db.collection('Reservations').doc(matchId);
     await _db.runTransaction((transaction) async {

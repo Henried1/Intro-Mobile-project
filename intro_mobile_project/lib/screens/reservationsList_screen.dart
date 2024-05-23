@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+const primaryColor = Color.fromARGB(255, 245, 90, 79);
+
 class ReservationListScreen extends StatefulWidget {
   const ReservationListScreen({Key? key}) : super(key: key);
 
@@ -17,7 +19,7 @@ class _ReservationListScreen extends State<ReservationListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Your Reservations'),
-        backgroundColor: const Color.fromARGB(255, 245, 90, 79),
+        backgroundColor: primaryColor,
       ),
       body: userEmail == null
           ? Center(child: Text("No user logged in."))
