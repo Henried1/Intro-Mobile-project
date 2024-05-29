@@ -9,19 +9,21 @@ class UserGamesTab extends StatelessWidget {
   final FirestoreService _firestoreService = FirestoreService();
   final String? userEmail = FirebaseAuth.instance.currentUser?.email;
 
+  UserGamesTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: _firestoreService.getUserMatches(userEmail!),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text('Something went wrong'));
+          return const Center(child: Text('Something went wrong'));
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('You have no matches'));
+          return const Center(child: Text('You have no matches'));
         }
         return ListView(
           children: snapshot.data!.docs.map((doc) {
@@ -31,13 +33,13 @@ class UserGamesTab extends StatelessWidget {
               subtitle: Text(
                   'Players: ${data['CurrentPlayers'].length}/${data['Players']}'),
               trailing: ElevatedButton(
-                child: Text('Leave'),
                 onPressed: () {
                   _firestoreService.leaveMatch(doc.id, userEmail!);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor,
                 ),
+                child: const Text('Leave'),
               ),
             );
           }).toList(),

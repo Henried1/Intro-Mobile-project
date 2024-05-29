@@ -6,7 +6,6 @@ import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/widgets/navigationBarWidget.dart'
     as customNavBar;
 import 'package:intro_mobile_project/screens/fields_screen.dart';
-import 'package:intro_mobile_project/widgets/publicGamesTabWidget.dart';
 
 const Color primaryColor = Color.fromARGB(255, 245, 90, 79);
 
@@ -117,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => GamesScreen()),
+                MaterialPageRoute(builder: (context) => const GamesScreen()),
               );
             },
             child: Container(
@@ -147,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: customNavBar.NavigationBar(),
+      bottomNavigationBar: const customNavBar.NavigationBar(),
     );
   }
 }

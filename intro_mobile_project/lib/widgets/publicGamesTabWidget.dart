@@ -9,19 +9,21 @@ class PublicGamesTab extends StatelessWidget {
   final FirestoreService _firestoreService = FirestoreService();
   final String? userEmail = FirebaseAuth.instance.currentUser?.email;
 
+  PublicGamesTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: _firestoreService.getPublicMatches(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text('Something went wrong'));
+          return const Center(child: Text('Something went wrong'));
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('No public matches available'));
+          return const Center(child: Text('No public matches available'));
         }
         return ListView(
           children: snapshot.data!.docs.map((doc) {
@@ -44,7 +46,6 @@ class PublicGamesTab extends StatelessWidget {
               title: Text('${data['Field']} (${data['Location']})'),
               subtitle: Text('Players: ${currentPlayers.length}/$maxPlayers'),
               trailing: ElevatedButton(
-                child: Text(buttonText),
                 onPressed: canJoin
                     ? () {
                         _firestoreService.joinMatch(doc.id, userEmail!);
@@ -53,6 +54,7 @@ class PublicGamesTab extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor,
                 ),
+                child: Text(buttonText),
               ),
             );
           }).toList(),
