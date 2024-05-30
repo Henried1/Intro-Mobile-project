@@ -11,7 +11,8 @@ class BookingPage extends StatefulWidget {
   final String fieldName;
   final String fieldLocation;
 
-  BookingPage({required this.fieldName, this.fieldLocation = ""});
+  const BookingPage(
+      {super.key, required this.fieldName, this.fieldLocation = ""});
 
   @override
   _BookingPageState createState() => _BookingPageState();
@@ -48,7 +49,7 @@ class _BookingPageState extends State<BookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Booking a field'),
+        title: const Text('Booking a field'),
         backgroundColor: primaryColor,
       ),
       body: Column(
@@ -93,7 +94,7 @@ class _BookingPageState extends State<BookingPage> {
                           ),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: 50,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -114,7 +115,7 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                       ),
                       SwitchListTile(
-                        title: Text('Private Match'),
+                        title: const Text('Private Match'),
                         value: _isPrivateMatch,
                         activeColor:
                             primaryColor, // Primary color for the thumb
@@ -133,7 +134,7 @@ class _BookingPageState extends State<BookingPage> {
             ),
           ),
           _buildBookingButton(),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
         ],
       ),
     );
@@ -184,12 +185,12 @@ class _BookingPageState extends State<BookingPage> {
       stream: FirestoreService().getBookedSlots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return SliverToBoxAdapter(
+          return const SliverToBoxAdapter(
             child: Text('Something went wrong'),
           );
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return SliverToBoxAdapter(
+          return const SliverToBoxAdapter(
             child: Center(child: CircularProgressIndicator()),
           );
         }
@@ -252,7 +253,7 @@ class _BookingPageState extends State<BookingPage> {
             },
             childCount: 20,
           ),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             childAspectRatio: 1.5,
           ),
@@ -264,8 +265,8 @@ class _BookingPageState extends State<BookingPage> {
   Widget _buildBookingButton() {
     return FloatingActionButton.extended(
       onPressed: _onBookingButtonPressed,
-      label: Text('Book now'),
-      icon: Icon(Icons.book),
+      label: const Text('Book now'),
+      icon: const Icon(Icons.book),
       backgroundColor: primaryColor,
     );
   }
@@ -300,7 +301,7 @@ class _BookingPageState extends State<BookingPage> {
       if (success) {
         setState(() {
           _bookedSlots.add(
-              "${bookingDateTime.year.toString().padLeft(4, '0')}-${bookingDateTime.month.toString().padLeft(2, '0')}-${bookingDateTime.day.toString().padLeft(2, '0')}T${bookingDateTime.hour.toString().padLeft(2, '0')}:${bookingDateTime.minute.toString().padLeft(2, '0')}_${_selectedTimeSlotIndex}");
+              "${bookingDateTime.year.toString().padLeft(4, '0')}-${bookingDateTime.month.toString().padLeft(2, '0')}-${bookingDateTime.day.toString().padLeft(2, '0')}T${bookingDateTime.hour.toString().padLeft(2, '0')}:${bookingDateTime.minute.toString().padLeft(2, '0')}_$_selectedTimeSlotIndex");
         });
         _showSuccessDialog("Your booking was successful.");
       } else {
@@ -316,11 +317,11 @@ class _BookingPageState extends State<BookingPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Error'),
+          title: const Text('Error'),
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -336,14 +337,14 @@ class _BookingPageState extends State<BookingPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Success'),
+          title: const Text('Success'),
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
                   (route) => false,
                 );
               },

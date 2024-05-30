@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intro_mobile_project/screens/public_games_screen.dart';
+import 'package:intro_mobile_project/screens/games_screen.dart';
 import 'package:intro_mobile_project/screens/reservationsList_screen.dart';
 import 'package:intro_mobile_project/screens/signin_screen.dart';
-import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
+import 'package:intro_mobile_project/widgets/navigationBarWidget.dart'
     as customNavBar;
 import 'package:intro_mobile_project/screens/fields_screen.dart';
 
@@ -116,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PublicMatchesScreen()),
+                MaterialPageRoute(builder: (context) => const GamesScreen()),
               );
             },
             child: Container(
@@ -137,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 10,
                   ),
                   Text(
-                    'View Public Games',
+                    'Play a game',
                     style: TextStyle(fontSize: 24.0, color: Colors.white),
                   ),
                 ],
@@ -146,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: customNavBar.NavigationBar(),
+      bottomNavigationBar: const customNavBar.NavigationBar(),
     );
   }
 }

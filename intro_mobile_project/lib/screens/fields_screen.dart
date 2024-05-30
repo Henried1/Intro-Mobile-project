@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intro_mobile_project/screens/field_details_screen.dart';
 
 class FieldsScreen extends StatefulWidget {
-  const FieldsScreen({Key? key}) : super(key: key);
+  const FieldsScreen({super.key});
 
   @override
   State<FieldsScreen> createState() => _FieldScreens();
@@ -22,7 +22,7 @@ class _FieldScreens extends State<FieldsScreen> {
         stream: FirebaseFirestore.instance.collection('fields').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -58,13 +58,13 @@ class _FieldScreens extends State<FieldsScreen> {
                     ListTile(
                       title: Text(
                         field['fieldName'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                         ),
                       ),
                       subtitle: Text(
                         field['fieldLocation'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.grey,
                         ),
                       ),

@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+const primaryColor = Color.fromARGB(255, 245, 90, 79);
+
 class ReservationListScreen extends StatefulWidget {
-  const ReservationListScreen({Key? key}) : super(key: key);
+  const ReservationListScreen({super.key});
 
   @override
   State<ReservationListScreen> createState() => _ReservationListScreen();
@@ -16,11 +18,11 @@ class _ReservationListScreen extends State<ReservationListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your Reservations'),
-        backgroundColor: const Color.fromARGB(255, 245, 90, 79),
+        title: const Text('Your Reservations'),
+        backgroundColor: primaryColor,
       ),
       body: userEmail == null
-          ? Center(child: Text("No user logged in."))
+          ? const Center(child: Text("No user logged in."))
           : StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('Reservations')
@@ -29,13 +31,13 @@ class _ReservationListScreen extends State<ReservationListScreen> {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  return Center(child: Text('There is an error'));
+                  return const Center(child: Text('There is an error'));
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
                 if (snapshot.data!.docs.isEmpty) {
-                  return Center(child: Text("No reservations found."));
+                  return const Center(child: Text("No reservations found."));
                 }
                 return ListView(
                   children: snapshot.data!.docs.map((DocumentSnapshot doc) {
@@ -57,23 +59,23 @@ class _ReservationListScreen extends State<ReservationListScreen> {
                           children: [
                             Text(
                               data['Field'] ?? 'Unknown Field',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 24, fontWeight: FontWeight.bold),
                             ),
                             Text(
                               data['Location'] ?? 'Unknown Location',
                               style:
-                                  TextStyle(fontSize: 18, color: Colors.grey),
+                                  const TextStyle(fontSize: 18, color: Colors.grey),
                             ),
                             Text(
                               formattedDate,
                               style:
-                                  TextStyle(fontSize: 18, color: Colors.grey),
+                                  const TextStyle(fontSize: 18, color: Colors.grey),
                             ),
                             Text(
                               'Players: ${data['Players'] ?? 'N/A'}',
                               style:
-                                  TextStyle(fontSize: 18, color: Colors.grey),
+                                  const TextStyle(fontSize: 18, color: Colors.grey),
                             ),
                           ],
                         ),

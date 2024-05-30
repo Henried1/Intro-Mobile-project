@@ -65,6 +65,13 @@ class FirestoreService {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> getUserMatches(String userEmail) {
+    return _db
+        .collection('Reservations')
+        .where('CurrentPlayers', arrayContains: userEmail)
+        .snapshots();
+  }
+
   Future<void> joinMatch(String matchId, String userEmail) async {
     DocumentReference matchRef = _db.collection('Reservations').doc(matchId);
     await _db.runTransaction((transaction) async {
@@ -75,6 +82,20 @@ class FirestoreService {
         if (!currentPlayers.contains(userEmail) &&
             currentPlayers.length < maxPlayers) {
           currentPlayers.add(userEmail);
+          transaction.update(matchRef, {'CurrentPlayers': currentPlayers});
+        }
+      }
+    });
+  }
+
+  Future<void> leaveMatch(String matchId, String userEmail) async {
+    DocumentReference matchRef = _db.collection('Reservations').doc(matchId);
+    await _db.runTransaction((transaction) async {
+      DocumentSnapshot matchSnapshot = await transaction.get(matchRef);
+      if (matchSnapshot.exists) {
+        List currentPlayers = List.from(matchSnapshot['CurrentPlayers'] ?? []);
+        if (currentPlayers.contains(userEmail)) {
+          currentPlayers.remove(userEmail);
           transaction.update(matchRef, {'CurrentPlayers': currentPlayers});
         }
       }
