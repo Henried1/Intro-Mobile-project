@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:intro_mobile_project/service/database.dart';
 import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
     as customNavBar;
@@ -101,7 +103,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           children: [
             TextFormField(
               controller: usernameController,
-              decoration: const InputDecoration(labelText: 'First Name'),
+              decoration: InputDecoration(labelText: 'First Name'),
               onChanged: (value) {
                 setState(() {
                   _isChanged = true;
@@ -119,7 +121,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             // ),
             TextFormField(
               controller: emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: 'Email'),
               onChanged: (value) {
                 setState(() {
                   _isChanged = true;
@@ -129,7 +131,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: _isChanged ? _updateProfile : null,
-              child: const Text('Update Profile'),
+              child: Text('Update Profile'),
             ),
           ],
         ),
