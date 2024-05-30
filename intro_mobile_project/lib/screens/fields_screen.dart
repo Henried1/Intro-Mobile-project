@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:intro_mobile_project/screens/field_details_screen.dart';
 
 class FieldsScreen extends StatefulWidget {
@@ -43,16 +42,30 @@ class _FieldScreens extends State<FieldsScreen> {
                 ),
                 child: Column(
                   children: <Widget>[
-                    ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(20),
-                        topLeft: Radius.circular(20),
-                      ),
-                      child: Image.network(
-                        field['fieldImage'],
-                        height: 200,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FieldDetailScreen(
+                              fieldName: field['fieldName'],
+                              fieldImage: field['fieldImage'],
+                              fieldLocation: field['fieldLocation'],
+                            ),
+                          ),
+                        );
+                      },
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          topLeft: Radius.circular(20),
+                        ),
+                        child: Image.network(
+                          field['fieldImage'],
+                          height: 200,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
                       ),
                     ),
                     ListTile(
