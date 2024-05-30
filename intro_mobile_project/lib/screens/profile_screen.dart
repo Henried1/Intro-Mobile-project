@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intro_mobile_project/screens/signin_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import 'package:intro_mobile_project/screens/signin_screen.dart';
+import 'package:intro_mobile_project/screens/edit_profile_screen.dart';
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
     as customNavBar;
+import 'package:url_launcher/url_launcher_string.dart';
+
+const Color primaryColor = Color.fromARGB(255, 245, 90, 79);
 
 class ProfileScreenWidget extends StatefulWidget {
   const ProfileScreenWidget({super.key});
@@ -13,29 +19,67 @@ class ProfileScreenWidget extends StatefulWidget {
 }
 
 class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
-  //late ProfileScreenModel _model;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  String username = 'Loading...';
+  String email = 'Loading...';
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _model = createModel(context, () => ProfileScreenModel());
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserProfile();
+  }
 
-  // @override
-  // void dispose() {
-  //   _model.dispose();
+  Future<void> _fetchUserProfile() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && user.email != null) {
+      print(
+          "Fetching profile for user with email: ${user.email}"); // Debug print
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(user.email)
+          .get();
 
-  //   super.dispose();
-  // }
+      if (userDoc.exists) {
+        print("User document data: ${userDoc.data()}"); // Debug print
+        setState(() {
+          username = userDoc['Username'] ?? 'No Username';
+          email = userDoc['Email'] ?? 'No Email';
+        });
+      } else {
+        print("User profile not found"); // Debug print
+        setState(() {
+          username = 'User profile not found';
+          email = 'User profile not found';
+        });
+      }
+    } else {
+      print("No user is currently signed in or email is null"); // Debug print
+      setState(() {
+        username = 'No user is signed in';
+        email = 'No user is signed in';
+      });
+    }
+  }
+
+  Future<void> _launchURL() async {
+    const url = 'http://www.example.com';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // onTap: () => _model.unfocusNode.canRequestFocus
-      //     ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-      //     : FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
+          currentFocus.focusedChild!.unfocus();
+        }
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
@@ -44,19 +88,13 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
           automaticallyImplyLeading: false,
           title: const Text(
             'Profile',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
           ),
           actions: [
-            //   Icon(
-            //     Icons.settings_outlined,
-            //     color: Color.fromARGB(255, 177, 177, 177),
-            //     size: 30.0,
-            //   ),
-            // ],
             PopupMenuButton<String>(
               icon: const Icon(
                 Icons.more_vert,
-                color: Colors.white,
+                color: Colors.black,
                 size: 30.0,
               ),
               offset: const Offset(0, 60),
@@ -69,20 +107,14 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                       applicationVersion: '1.0.0',
                     );
                     break;
-                  case 'Save':
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Saved!'),
-                      ),
+                  case 'Edit':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditProfileScreen()),
                     );
                     break;
-                  // case 'Quit':
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(
-                  //       content: Text('Quit!'),
-                  //     ),
-                  //   );
-                  //   break;
+
                   case 'Log out':
                     await FirebaseAuth.instance.signOut();
                     print("Logged out");
@@ -100,8 +132,8 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                   child: Text('About'),
                 ),
                 const PopupMenuItem<String>(
-                  value: 'Save',
-                  child: Text('Save*'),
+                  value: 'Edit',
+                  child: Text('Edit'),
                 ),
                 const PopupMenuItem<String>(
                   value: 'Log out',
@@ -135,8 +167,8 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                 child: Align(
                   alignment: AlignmentDirectional(0.0, 1.0),
                   child: Container(
-                    width: MediaQuery.sizeOf(context).width * 0.3,
-                    height: MediaQuery.sizeOf(context).width * 0.3,
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    height: MediaQuery.of(context).size.width * 0.3,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
@@ -161,9 +193,76 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                 alignment: AlignmentDirectional(0.0, 0.0),
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
-                  child: Text(
-                    'Jane Doe',
-                    style: TextStyle(fontSize: 25, color: Colors.black),
+                  child: Column(
+                    children: [
+                      Text(
+                        username,
+                        style: TextStyle(fontSize: 25, color: Colors.black),
+                      ),
+                      Text(
+                        email,
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  showAboutDialog(
+                    context: context,
+                    applicationName: 'Paddle App',
+                    applicationVersion: '1.0.0',
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'About',
+                        style: TextStyle(fontSize: 24.0, color: Colors.white),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios_outlined,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  const url =
+                      'https://docs.google.com/forms/d/e/1FAIpQLSdozt0pcXY7Jech1quq9E6EmDlth4ATEsXaJJkmJkIoH1-Xvg/viewform?usp=sf_link';
+
+                  await launchUrlString(url);
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Feedback',
+                        style: TextStyle(fontSize: 24.0, color: Colors.white),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios_outlined,
+                        color: Colors.white,
+                      ),
+                    ],
                   ),
                 ),
               ),
