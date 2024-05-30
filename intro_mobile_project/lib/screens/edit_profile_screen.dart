@@ -31,7 +31,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (user != null) {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('Users')
-          .doc(user.uid)
+          .doc(user.email)
           .get();
 
       setState(() {
