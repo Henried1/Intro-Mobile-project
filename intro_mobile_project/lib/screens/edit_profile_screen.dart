@@ -30,13 +30,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
+          .collection('Users')
           .doc(user.uid)
           .get();
 
       setState(() {
-        emailController.text = userDoc['email'];
-        usernameController.text = userDoc['username'];
+        emailController.text = userDoc['Email'];
+        usernameController.text = userDoc['Username'];
       });
     }
   }
