@@ -207,6 +207,9 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                   ),
                 ),
               ),
+              Expanded(
+                child: Container(),
+              ),
               GestureDetector(
                 onTap: () async {
                   showAboutDialog(
@@ -216,7 +219,8 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                   );
                 },
                 child: Container(
-                  margin: const EdgeInsets.all(20.0),
+                  margin: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 20),
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     color: primaryColor,
@@ -245,7 +249,8 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                   await launchUrlString(url);
                 },
                 child: Container(
-                  margin: const EdgeInsets.all(20.0),
+                  margin: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 20),
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     color: primaryColor,
@@ -257,6 +262,39 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                       Text(
                         'Feedback',
                         style: TextStyle(fontSize: 24.0, color: Colors.white),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios_outlined,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut();
+                  print("Logged out");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SignInScreen()),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 20),
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Log out',
+                        style: TextStyle(fontSize: 20.0, color: Colors.white),
                       ),
                       Icon(
                         Icons.arrow_forward_ios_outlined,
