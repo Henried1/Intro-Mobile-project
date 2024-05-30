@@ -37,7 +37,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       setState(() {
         emailController.text = userDoc['email'];
         usernameController.text = userDoc['username'];
-        // familyNameController.text = userDoc['familyName'];
       });
     }
   }
@@ -51,7 +50,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           .update({
         'Email': emailController.text,
         'Username': usernameController.text,
-        // 'familyName': familyNameController.text,
       });
       setState(() {
         _isChanged = false;
@@ -110,15 +108,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 });
               },
             ),
-            // TextFormField(
-            //   controller: usernameController,
-            //   decoration: InputDecoration(labelText: 'Family Name'),
-            //   onChanged: (value) {
-            //     setState(() {
-            //       _isChanged = true;
-            //     });
-            //   },
-            // ),
             TextFormField(
               controller: emailController,
               decoration: InputDecoration(labelText: 'Email'),

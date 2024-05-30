@@ -1,10 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/screens/edit_profile_screen.dart';
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
     as customNavBar;
+import 'package:url_launcher/url_launcher_string.dart';
+
+const Color primaryColor = Color.fromARGB(255, 245, 90, 79);
 
 class ProfileScreenWidget extends StatefulWidget {
   const ProfileScreenWidget({super.key});
@@ -53,6 +58,15 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
         username = 'No user is signed in';
         email = 'No user is signed in';
       });
+    }
+  }
+
+  Future<void> _launchURL() async {
+    const url = 'http://www.example.com';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 
@@ -188,6 +202,65 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                       Text(
                         email,
                         style: TextStyle(fontSize: 15, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  showAboutDialog(
+                    context: context,
+                    applicationName: 'Paddle App',
+                    applicationVersion: '1.0.0',
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'About',
+                        style: TextStyle(fontSize: 24.0, color: Colors.white),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios_outlined,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  const url =
+                      'https://docs.google.com/forms/d/e/1FAIpQLSdozt0pcXY7Jech1quq9E6EmDlth4ATEsXaJJkmJkIoH1-Xvg/viewform?usp=sf_link';
+
+                  await launchUrlString(url);
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Feedback',
+                        style: TextStyle(fontSize: 24.0, color: Colors.white),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios_outlined,
+                        color: Colors.white,
                       ),
                     ],
                   ),
