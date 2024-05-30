@@ -61,14 +61,14 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
     }
   }
 
-  Future<void> _launchURL() async {
-    const url = 'http://www.example.com';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  // Future<void> _launchURL() async {
+  //   const url = 'http://www.example.com';
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -208,39 +208,40 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                 ),
               ),
               Expanded(
+                //Deze expanded zorgt ervoor dat de onderstaande widgets bottom aligned zijn
                 child: Container(),
               ),
-              GestureDetector(
-                onTap: () async {
-                  showAboutDialog(
-                    context: context,
-                    applicationName: 'Paddle App',
-                    applicationVersion: '1.0.0',
-                  );
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(
-                      left: 20.0, right: 20.0, bottom: 20),
-                  padding: const EdgeInsets.all(20.0),
-                  decoration: BoxDecoration(
-                    color: primaryColor,
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'About',
-                        style: TextStyle(fontSize: 24.0, color: Colors.white),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios_outlined,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              // GestureDetector(
+              //   onTap: () async {
+              //     showAboutDialog(
+              //       context: context,
+              //       applicationName: 'Paddle App',
+              //       applicationVersion: '1.0.0',
+              //     );
+              //   },
+              //   child: Container(
+              //     margin: const EdgeInsets.only(
+              //         left: 20.0, right: 20.0, bottom: 20),
+              //     padding: const EdgeInsets.all(20.0),
+              //     decoration: BoxDecoration(
+              //       color: primaryColor,
+              //       borderRadius: BorderRadius.circular(20.0),
+              //     ),
+              //     child: const Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //       children: [
+              //         Text(
+              //           'About',
+              //           style: TextStyle(fontSize: 24.0, color: Colors.white),
+              //         ),
+              //         Icon(
+              //           Icons.arrow_forward_ios_outlined,
+              //           color: Colors.white,
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
               GestureDetector(
                 onTap: () async {
                   const url =
