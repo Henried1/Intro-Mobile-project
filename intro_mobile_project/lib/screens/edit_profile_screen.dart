@@ -74,6 +74,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               color: Colors.black,
               size: 30.0,
             ),
+            offset: const Offset(0, 60),
             onSelected: (String result) async {
               switch (result) {
                 case 'Log out':
