@@ -44,7 +44,6 @@ class _ReservationListScreen extends State<ReservationListScreen> {
                     Map<String, dynamic> data =
                         doc.data() as Map<String, dynamic>;
 
-                    // Handle date parsing
                     Timestamp timestamp = data['Date'];
                     DateTime dateTime = timestamp.toDate();
                     String formattedDate =
@@ -64,18 +63,18 @@ class _ReservationListScreen extends State<ReservationListScreen> {
                             ),
                             Text(
                               data['Location'] ?? 'Unknown Location',
-                              style:
-                                  const TextStyle(fontSize: 18, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 18, color: Colors.grey),
                             ),
                             Text(
                               formattedDate,
-                              style:
-                                  const TextStyle(fontSize: 18, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 18, color: Colors.grey),
                             ),
                             Text(
                               'Players: ${data['Players'] ?? 'N/A'}',
-                              style:
-                                  const TextStyle(fontSize: 18, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 18, color: Colors.grey),
                             ),
                           ],
                         ),

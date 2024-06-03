@@ -13,62 +13,95 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-              hexStringToColor("FF0000"),
-              hexStringToColor("FF0000"),
-              hexStringToColor("FF0000")
-            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-            child: SingleChildScrollView(
-              child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      20, MediaQuery.of(context).size.height * 0.2, 20, 0),
-                  child: Column(children: <Widget>[
-                    logoWidget("assets/images/logo.png"),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    textField("Enter Username", Icons.person_2_outlined, false,
-                        emailController),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    textField(
-                        "Enter password", Icons.lock, true, passwordController),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    signInSignUpButton(context, true, () {
-                      FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
-                              email: emailController.text,
-                              password: passwordController.text)
-                          .then((value) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomeScreen()));
-                      }).onError((error, stackTrace) {
-                        print("Error ${error.toString()}");
-                      });
-                    }),
-                    signUpOption()
-                  ])),
-            )));
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        color: Colors.white,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+                20, MediaQuery.of(context).size.height * 0.1, 20, 0),
+            child: Form(
+              key: _formKey,
+              child: Column(children: <Widget>[
+                logoWidget("assets/images/logo.png"),
+                const SizedBox(
+                  height: 30,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Enter Email address',
+                    labelStyle: TextStyle(color: Colors.black),
+                    icon: Icon(Icons.email_outlined, color: Colors.black),
+                  ),
+                  style: TextStyle(color: Colors.black),
+                  obscureText: false,
+                  controller: emailController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Enter Password',
+                    labelStyle: TextStyle(color: Colors.black),
+                    icon: Icon(Icons.lock, color: Colors.black),
+                  ),
+                  style: TextStyle(color: Colors.black),
+                  obscureText: true,
+                  controller: passwordController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                signInSignUpButton(context, true, () async {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                            email: emailController.text,
+                            password: passwordController.text)
+                        .then((value) {
+                      print("Succesful sign in");
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()));
+                    }).onError((error, stackTrace) {
+                      print("Error ${error.toString()}");
+                    });
+                  }
+                }),
+                signUpOption(),
+              ]),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Row signUpOption() {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       const Text("Don't have an account?",
-          style: TextStyle(color: Colors.white70)),
+          style: TextStyle(color: Colors.black)),
       GestureDetector(
         onTap: () {
           Navigator.push(context,
@@ -76,7 +109,7 @@ class _SignInScreenState extends State<SignInScreen> {
         },
         child: const Text(
           " Sign up",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
     ]);

@@ -13,13 +13,16 @@ class FirestoreService {
   final CollectionReference bookingCollection =
       FirebaseFirestore.instance.collection('bookings');
 
-  Stream<QuerySnapshot> getBookedSlots() {
-    DateTime today = DateTime.now();
-    DateTime end = DateTime(today.year, today.month, today.day, 23, 59, 59);
+  Stream<QuerySnapshot> getBookedSlots(DateTime selectedDay) {
+    DateTime startOfDay =
+        DateTime(selectedDay.year, selectedDay.month, selectedDay.day, 0, 0, 0);
+    DateTime endOfDay = DateTime(
+        selectedDay.year, selectedDay.month, selectedDay.day, 23, 59, 59);
+
     return _db
-        .collection('bookings')
-        .where('dateTime', isGreaterThanOrEqualTo: today)
-        .where('dateTime', isLessThanOrEqualTo: end)
+        .collection('BookedSlots')
+        .where('Date', isGreaterThanOrEqualTo: startOfDay)
+        .where('Date', isLessThanOrEqualTo: endOfDay)
         .snapshots();
   }
 

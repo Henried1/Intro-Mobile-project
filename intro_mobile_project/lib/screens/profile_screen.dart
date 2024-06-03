@@ -22,6 +22,7 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   String username = 'Loading...';
   String email = 'Loading...';
+  String initial = '';
 
   @override
   void initState() {
@@ -167,26 +168,22 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                 child: Align(
                   alignment: AlignmentDirectional(0.0, 1.0),
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    height: MediaQuery.of(context).size.width * 0.3,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      height: MediaQuery.of(context).size.width * 0.3,
+                      decoration: BoxDecoration(
                         color: Colors.white,
-                        width: 5.0,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 5.0,
+                        ),
                       ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50.0),
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        width: 150.0,
-                        height: 156.0,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
+                      child: CircleAvatar(
+                        child: Text(
+                          username[0].toUpperCase(),
+                          style: TextStyle(fontSize: 50.0),
+                        ),
+                      )),
                 ),
               ),
               Align(
