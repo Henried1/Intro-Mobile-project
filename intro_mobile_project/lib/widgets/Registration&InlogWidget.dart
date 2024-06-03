@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
+const Color primaryColor = Color.fromARGB(255, 245, 90, 79);
+
 Image logoWidget(String imageName) {
   return Image.asset(
     imageName,
     fit: BoxFit.fitWidth,
     width: 240,
     height: 240,
-    color: Colors.white,
+    color: primaryColor,
   );
 }
 
@@ -55,7 +57,7 @@ Container signInSignUpButton(
           if (states.contains(MaterialState.pressed)) {
             return Colors.black26;
           }
-          return Colors.white;
+          return primaryColor;
         }),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),

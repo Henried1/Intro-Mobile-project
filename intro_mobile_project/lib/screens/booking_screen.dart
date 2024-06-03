@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
@@ -30,6 +32,7 @@ class _BookingPageState extends State<BookingPage> {
   int _selectedPlayers = 2;
   bool _isPrivateMatch = false;
   List<String> _bookedSlots = [];
+  late StreamSubscription<QuerySnapshot> _bookedSlotsSubscription;
 
   @override
   void initState() {
@@ -38,11 +41,23 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   void _fetchBookedSlots() {
-    FirestoreService().getBookedSlots().listen((QuerySnapshot snapshot) {
-      setState(() {
-        _bookedSlots = snapshot.docs.map((doc) => doc.id).toList();
-      });
+    _bookedSlotsSubscription = FirestoreService()
+        .getBookedSlots(_selectedDay)
+        .listen((QuerySnapshot snapshot) {
+      final bookedSlots = snapshot.docs.map((doc) => doc.id).toList();
+      print("Fetched booked slots: $bookedSlots");
+      if (mounted) {
+        setState(() {
+          _bookedSlots = bookedSlots;
+        });
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _bookedSlotsSubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -107,9 +122,11 @@ class _BookingPageState extends State<BookingPage> {
                               );
                             }).toList(),
                             onChanged: (int? newValue) {
-                              setState(() {
-                                _selectedPlayers = newValue!;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  _selectedPlayers = newValue!;
+                                });
+                              }
                             },
                           ),
                         ),
@@ -117,14 +134,14 @@ class _BookingPageState extends State<BookingPage> {
                       SwitchListTile(
                         title: const Text('Private Match'),
                         value: _isPrivateMatch,
-                        activeColor:
-                            primaryColor, // Primary color for the thumb
-                        activeTrackColor: primaryColor.withOpacity(
-                            0.5), // Lighter primary color for the track
+                        activeColor: primaryColor,
+                        activeTrackColor: primaryColor.withOpacity(0.5),
                         onChanged: (bool value) {
-                          setState(() {
-                            _isPrivateMatch = value;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              _isPrivateMatch = value;
+                            });
+                          }
                         },
                       ),
                     ],
@@ -158,31 +175,36 @@ class _BookingPageState extends State<BookingPage> {
         CalendarFormat.month: 'Month',
       },
       onFormatChanged: (format) {
-        setState(() {
-          _calendarFormat = format;
-        });
+        if (mounted) {
+          setState(() {
+            _calendarFormat = format;
+          });
+        }
       },
       onDaySelected: (selectedDay, focusedDay) {
-        setState(() {
-          _selectedDay = selectedDay;
-          _focusedDay = focusedDay;
-          _dateSelected = true;
-          if (selectedDay.weekday == DateTime.saturday ||
-              selectedDay.weekday == DateTime.sunday) {
-            _isWeekend = true;
-            _timeSelected = false;
-            _selectedTimeSlotIndex = null;
-          } else {
-            _isWeekend = false;
-          }
-        });
+        if (mounted) {
+          setState(() {
+            _selectedDay = selectedDay;
+            _focusedDay = focusedDay;
+            _dateSelected = true;
+            if (selectedDay.weekday == DateTime.saturday ||
+                selectedDay.weekday == DateTime.sunday) {
+              _isWeekend = true;
+              _timeSelected = false;
+              _selectedTimeSlotIndex = null;
+            } else {
+              _isWeekend = false;
+            }
+          });
+          _fetchBookedSlots(); // Update booked slots on date change
+        }
       },
     );
   }
 
   Widget _buildTimeSlotsGrid() {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirestoreService().getBookedSlots(),
+      stream: FirestoreService().getBookedSlots(_selectedDay),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return const SliverToBoxAdapter(
@@ -194,7 +216,10 @@ class _BookingPageState extends State<BookingPage> {
             child: Center(child: CircularProgressIndicator()),
           );
         }
+
         _bookedSlots = snapshot.data!.docs.map((doc) => doc.id).toList();
+        print("Booked slots in stream builder: $_bookedSlots");
+
         return SliverGrid(
           delegate: SliverChildBuilderDelegate(
             (context, index) {
@@ -205,20 +230,44 @@ class _BookingPageState extends State<BookingPage> {
                   '${slotTime.hour.toString().padLeft(2, '0')}:${slotTime.minute.toString().padLeft(2, '0')}';
               bool isPast = slotTime.isBefore(DateTime.now());
               String slotId =
-                  "${slotTime.year.toString().padLeft(4, '0')}-${slotTime.month.toString().padLeft(2, '0')}-${slotTime.day.toString().padLeft(2, '0')}T${slotTime.hour.toString().padLeft(2, '0')}:${slotTime.minute.toString().padLeft(2, '0')}_$index";
+                  "${slotTime.toIso8601String()}_$index${widget.fieldName}";
               bool isBooked = _bookedSlots.contains(slotId);
+
               bool isGreyedOut = _selectedTimeSlotIndex != null &&
-                  index >= _selectedTimeSlotIndex! &&
-                  index <= _selectedTimeSlotIndex! + 2;
+                  ((index >= _selectedTimeSlotIndex! &&
+                          index < _selectedTimeSlotIndex! + 3) ||
+                      _bookedSlots.any((bookedSlot) {
+                        final bookedSlotParts = bookedSlot.split('_');
+                        if (bookedSlotParts.length < 2) return false;
+                        final bookedIndex = int.tryParse(bookedSlotParts[1]
+                            .replaceAll(widget.fieldName, ''));
+                        return bookedIndex != null &&
+                            ((index >= bookedIndex &&
+                                    index < bookedIndex + 3) ||
+                                (bookedIndex < index &&
+                                    index < bookedIndex + 3));
+                      }));
+
+              if (_selectedTimeSlotIndex != null &&
+                  (index >= _selectedTimeSlotIndex! &&
+                      index < _selectedTimeSlotIndex! + 2)) {
+                isBooked = true;
+              }
+
+              print(
+                  "Slot ID: $slotId, isBooked: $isBooked, isGreyedOut: $isGreyedOut");
+
               return InkWell(
                 splashColor: Colors.transparent,
                 onTap: isPast || isGreyedOut || isBooked
                     ? null
                     : () {
-                        setState(() {
-                          _selectedTimeSlotIndex = index;
-                          _timeSelected = true;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            _selectedTimeSlotIndex = index;
+                            _timeSelected = true;
+                          });
+                        }
                       },
                 child: Container(
                   margin: const EdgeInsets.all(5),
@@ -226,26 +275,27 @@ class _BookingPageState extends State<BookingPage> {
                     border: Border.all(
                       color: _selectedTimeSlotIndex == index
                           ? Colors.white
-                          : primaryColor,
+                          : Colors.black,
                     ),
                     borderRadius: BorderRadius.circular(15),
                     color: _selectedTimeSlotIndex == index
                         ? primaryColor
-                        : (isPast || isGreyedOut || isBooked
+                        : isPast || isGreyedOut || isBooked
                             ? Colors.grey
-                            : null),
+                            : Colors.white,
                   ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    timeText,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: _selectedTimeSlotIndex == index ||
-                              isPast ||
-                              isGreyedOut ||
-                              isBooked
-                          ? Colors.white
-                          : null,
+                  child: Center(
+                    child: Text(
+                      timeText,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: _selectedTimeSlotIndex == index ||
+                                isPast ||
+                                isGreyedOut ||
+                                isBooked
+                            ? Colors.white
+                            : null,
+                      ),
                     ),
                   ),
                 ),
@@ -285,9 +335,13 @@ class _BookingPageState extends State<BookingPage> {
       return;
     }
     if (userEmail == null) {
-      _showErrorDialog("User email is null.");
+      _showErrorDialog("User is not logged in.");
       return;
     }
+
+    String bookingId =
+        "${bookingDateTime.toIso8601String()}_$_selectedTimeSlotIndex${widget.fieldName}";
+
     FirestoreService()
         .addBooking(
             userEmail!,
@@ -298,21 +352,30 @@ class _BookingPageState extends State<BookingPage> {
             _selectedTimeSlotIndex!,
             _isPrivateMatch)
         .then((success) {
-      if (success) {
+      if (mounted) {
         setState(() {
-          _bookedSlots.add(
-              "${bookingDateTime.year.toString().padLeft(4, '0')}-${bookingDateTime.month.toString().padLeft(2, '0')}-${bookingDateTime.day.toString().padLeft(2, '0')}T${bookingDateTime.hour.toString().padLeft(2, '0')}:${bookingDateTime.minute.toString().padLeft(2, '0')}_$_selectedTimeSlotIndex");
+          if (success) {
+            _bookedSlots.add(bookingId);
+            _selectedTimeSlotIndex = null;
+            _timeSelected = false;
+          }
         });
-        _showSuccessDialog("Your booking was successful.");
-      } else {
-        _showErrorDialog("This slot is already booked.");
+
+        if (success) {
+          _showSuccessDialog("Your booking was successful.");
+        } else {
+          _showErrorDialog("This slot is already booked.");
+        }
       }
     }).catchError((error) {
-      _showErrorDialog("Failed to book the field: $error");
+      if (mounted) {
+        _showErrorDialog("Failed to book the field: $error");
+      }
     });
   }
 
   void _showErrorDialog(String message) {
+    if (!mounted) return; // Check before showing dialog
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -333,6 +396,7 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   void _showSuccessDialog(String message) {
+    if (!mounted) return; // Check before showing dialog
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {

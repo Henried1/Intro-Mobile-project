@@ -32,19 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
             alignment: Alignment.topRight,
             child: Padding(
               padding: const EdgeInsets.only(top: 20.0, right: 20.0),
-              child: ElevatedButton(
-                child: const Text("log out"),
-                onPressed: () {
-                  FirebaseAuth.instance.signOut().then((value) {
-                    print("Logged out");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SignInScreen()),
-                    );
-                  });
-                },
-              ),
             ),
           ),
           GestureDetector(
