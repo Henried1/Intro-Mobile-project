@@ -51,6 +51,7 @@ class _FieldScreens extends State<FieldsScreen> {
                               fieldName: field['fieldName'],
                               fieldImage: field['fieldImage'],
                               fieldLocation: field['fieldLocation'],
+                              fieldLocationImage: field['fieldLocationImage'],
                             ),
                           ),
                         );
@@ -89,6 +90,7 @@ class _FieldScreens extends State<FieldsScreen> {
                               fieldName: field['fieldName'],
                               fieldImage: field['fieldImage'],
                               fieldLocation: field['fieldLocation'],
+                              fieldLocationImage: field['fieldLocationImage'],
                             ),
                           ),
                         );

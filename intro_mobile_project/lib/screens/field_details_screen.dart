@@ -2,17 +2,20 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/booking_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FieldDetailScreen extends StatelessWidget {
   final String fieldName;
   final String fieldImage;
   final String fieldLocation;
+  final String fieldLocationImage;
 
   const FieldDetailScreen({
     super.key,
     required this.fieldName,
     required this.fieldImage,
     required this.fieldLocation,
+    required this.fieldLocationImage,
   });
 
   @override
@@ -20,11 +23,24 @@ class FieldDetailScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
+          _buildTopImageSection(context),
+          _buildScrollableDetails(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTopImageSection(BuildContext context) {
+    return Container(
+      height:
+          MediaQuery.of(context).size.height * 0.5, // 50% of the screen height
+      width: MediaQuery.of(context).size.width, // Full width of the screen
+      child: Stack(
+        children: [
           Positioned.fill(
-            child: Image.network(fieldImage, fit: BoxFit.cover),
+            child: Image.network(fieldLocationImage, fit: BoxFit.cover),
           ),
           _buildBackButton(context),
-          _buildScrollableDetails(),
         ],
       ),
     );
@@ -62,11 +78,11 @@ class FieldDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildScrollableDetails() {
+  Widget _buildScrollableDetails(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.6,
+      initialChildSize: 0.5, // Start at 50% height
       maxChildSize: 1.0,
-      minChildSize: 0.6,
+      minChildSize: 0.5, // Minimum height 50%
       builder: (context, scrollController) {
         return Container(
           clipBehavior: Clip.hardEdge,
@@ -85,7 +101,8 @@ class FieldDetailScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   children: [
                     _buildFieldName(),
-                    _buildFieldLocation(),
+                    _buildFieldLocation(context),
+                    _buildOpeningHours()
                   ],
                 ),
               ),
@@ -100,19 +117,96 @@ class FieldDetailScreen extends StatelessWidget {
   Widget _buildFieldName() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        'Field: $fieldName',
-        style: const TextStyle(color: Colors.white, fontSize: 24),
+      child: Row(
+        children: [
+          Icon(Icons.sports_soccer, color: Colors.white, size: 24),
+          SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              fieldName,
+              style: const TextStyle(color: Colors.white, fontSize: 24),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildFieldLocation() {
+  Widget _buildFieldLocation(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        'Field location: $fieldLocation',
-        style: const TextStyle(color: Colors.white, fontSize: 24),
+      child: InkWell(
+        onTap: () async {
+          final query = Uri.encodeComponent(fieldLocation);
+          final url = Uri.parse(
+              'https://www.google.com/maps/search/?api=1&query=$query');
+          if (await canLaunchUrl(url)) {
+            await launchUrl(url, mode: LaunchMode.externalApplication);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Could not launch $url')),
+            );
+          }
+        },
+        child: Row(
+          children: [
+            Icon(Icons.location_on, color: Colors.white, size: 24),
+            SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Address: $fieldLocation',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOpeningHours() {
+    final openingHours = {
+      'Monday': '09:30 - 20:00',
+      'Tuesday': '09:30 - 20:00',
+      'Wednesday': '09:30 - 20:00',
+      'Thursday': '09:30 - 20:00',
+      'Friday': '09:30 - 20:00',
+      'Saturday': '09:30 - 20:00',
+      'Sunday': '09:30 - 20:00',
+    };
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: <Widget>[
+              Icon(Icons.access_time, color: Colors.white),
+              SizedBox(width: 8.0),
+              Text(
+                'Opening Hours:',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ],
+          ),
+          SizedBox(height: 8.0),
+          ...openingHours.entries.map((entry) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2.0),
+              child: Text(
+                '${entry.key}: ${entry.value}',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            );
+          }).toList(),
+        ],
       ),
     );
   }

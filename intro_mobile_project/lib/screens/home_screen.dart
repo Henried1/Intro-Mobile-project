@@ -1,8 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/games_screen.dart';
 import 'package:intro_mobile_project/screens/reservationsList_screen.dart';
-import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/widgets/navigationBarWidget.dart'
     as customNavBar;
 import 'package:intro_mobile_project/screens/fields_screen.dart';
@@ -28,10 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Align(
+          const Align(
             alignment: Alignment.topRight,
             child: Padding(
-              padding: const EdgeInsets.only(top: 20.0, right: 20.0),
+              padding: EdgeInsets.only(top: 20.0, right: 20.0),
             ),
           ),
           GestureDetector(

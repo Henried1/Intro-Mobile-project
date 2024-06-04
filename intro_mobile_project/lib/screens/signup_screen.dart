@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/service/database.dart';
-import 'package:intro_mobile_project/utils/color_utils.dart';
 import 'package:intro_mobile_project/widgets/registration&InlogWidget.dart';
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'dart:math';
 
 class SignUpScreen extends StatefulWidget {
@@ -58,7 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           usernameController.text.isNotEmpty
                               ? usernameController.text[0].toUpperCase()
                               : '',
-                          style: TextStyle(fontSize: 40),
+                          style: const TextStyle(fontSize: 40),
                         )
                       : null,
                 ),
@@ -75,12 +73,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Text('Pick Profile Picture'),
                 ),*/
                 TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Enter Username',
                     labelStyle: TextStyle(color: Colors.black),
                     icon: Icon(Icons.person_2_outlined, color: Colors.black),
                   ),
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                   obscureText: false,
                   controller: usernameController,
                   onChanged: (value) {
@@ -98,12 +96,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 30,
                 ),
                 TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Enter Email address',
                     labelStyle: TextStyle(color: Colors.black),
                     icon: Icon(Icons.email_outlined, color: Colors.black),
                   ),
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                   obscureText: false,
                   controller: emailController,
                   validator: (value) {
@@ -117,12 +115,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 30,
                 ),
                 TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Enter Password',
                     labelStyle: TextStyle(color: Colors.black),
                     icon: Icon(Icons.lock, color: Colors.black),
                   ),
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                   obscureText: true,
                   controller: passwordController,
                   validator: (value) {

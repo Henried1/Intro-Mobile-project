@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/screens/edit_profile_screen.dart';
@@ -112,7 +111,7 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => EditProfileScreen()),
+                          builder: (context) => const EditProfileScreen()),
                     );
                     break;
 
@@ -158,7 +157,7 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                   color: Colors.white,
                   image: DecorationImage(
                     fit: BoxFit.fitWidth,
-                    alignment: AlignmentDirectional(0.0, -1.0),
+                    alignment: const AlignmentDirectional(0.0, -1.0),
                     image: Image.asset(
                       'assets/images/tennis-field-outdoor-illustration-background.jpg',
                     ).image,
@@ -166,7 +165,7 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                   shape: BoxShape.rectangle,
                 ),
                 child: Align(
-                  alignment: AlignmentDirectional(0.0, 1.0),
+                  alignment: const AlignmentDirectional(0.0, 1.0),
                   child: Container(
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.width * 0.3,
@@ -181,24 +180,24 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                       child: CircleAvatar(
                         child: Text(
                           username[0].toUpperCase(),
-                          style: TextStyle(fontSize: 50.0),
+                          style: const TextStyle(fontSize: 50.0),
                         ),
                       )),
                 ),
               ),
               Align(
-                alignment: AlignmentDirectional(0.0, 0.0),
+                alignment: const AlignmentDirectional(0.0, 0.0),
                 child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
                   child: Column(
                     children: [
                       Text(
                         username,
-                        style: TextStyle(fontSize: 25, color: Colors.black),
+                        style: const TextStyle(fontSize: 25, color: Colors.black),
                       ),
                       Text(
                         email,
-                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                        style: const TextStyle(fontSize: 15, color: Colors.grey),
                       ),
                     ],
                   ),
@@ -305,7 +304,7 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
             ],
           ),
         ),
-        bottomNavigationBar: customNavBar.NavigationBar(),
+        bottomNavigationBar: const customNavBar.NavigationBar(),
       ),
     );
   }
