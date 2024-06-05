@@ -136,7 +136,7 @@ class FieldDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: InkWell(
         onTap: () async {
-          final query = Uri.encodeComponent(fieldLocation);
+          final query = Uri.encodeComponent(fieldName);
           final url = Uri.parse(
               'https://www.google.com/maps/search/?api=1&query=$query');
           if (await canLaunchUrl(url)) {
