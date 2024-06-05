@@ -32,9 +32,8 @@ class FieldDetailScreen extends StatelessWidget {
 
   Widget _buildTopImageSection(BuildContext context) {
     return Container(
-      height:
-          MediaQuery.of(context).size.height * 0.5, // 50% of the screen height
-      width: MediaQuery.of(context).size.width, // Full width of the screen
+      height: MediaQuery.of(context).size.height * 0.5,
+      width: MediaQuery.of(context).size.width,
       child: Stack(
         children: [
           Positioned.fill(
@@ -80,9 +79,9 @@ class FieldDetailScreen extends StatelessWidget {
 
   Widget _buildScrollableDetails(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.5, // Start at 50% height
+      initialChildSize: 0.5,
       maxChildSize: 1.0,
-      minChildSize: 0.5, // Minimum height 50%
+      minChildSize: 0.5,
       builder: (context, scrollController) {
         return Container(
           clipBehavior: Clip.hardEdge,
