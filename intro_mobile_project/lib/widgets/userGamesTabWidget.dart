@@ -74,7 +74,6 @@ class UserGamesTab extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Players: ${currentPlayers.length}/${data['Players']}'),
-                  Text('Time: $formattedDate'),
                 ],
               ),
               trailing: Row(
