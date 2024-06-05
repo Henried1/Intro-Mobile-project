@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/screens/signup_screen.dart';
-import 'package:intro_mobile_project/utils/color_utils.dart';
 import 'package:intro_mobile_project/widgets/registration&InlogWidget.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -35,12 +34,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 30,
                 ),
                 TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Enter Email address',
                     labelStyle: TextStyle(color: Colors.black),
                     icon: Icon(Icons.email_outlined, color: Colors.black),
                   ),
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                   obscureText: false,
                   controller: emailController,
                   validator: (value) {
@@ -54,12 +53,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 30,
                 ),
                 TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Enter Password',
                     labelStyle: TextStyle(color: Colors.black),
                     icon: Icon(Icons.lock, color: Colors.black),
                   ),
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                   obscureText: true,
                   controller: passwordController,
                   validator: (value) {
