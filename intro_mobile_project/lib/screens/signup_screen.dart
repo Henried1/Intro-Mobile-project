@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/service/database.dart';
 import 'dart:io';
 import 'dart:math';
-
+import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
+    as custom;
 import 'package:intro_mobile_project/widgets/Registration&InlogWidget.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -61,18 +61,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         )
                       : null,
                 ),
-                /*  ElevatedButton(
-                  onPressed: () async {
-                    final pickedFile = await ImagePicker()
-                        .pickImage(source: ImageSource.gallery);
-                    if (pickedFile != null) {
-                      setState(() {
-                        _profilePicture = File(pickedFile.path);
-                      });
-                    }
-                  },
-                  child: Text('Pick Profile Picture'),
-                ),*/
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Enter Username',
@@ -140,10 +128,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             email: emailController.text,
                             password: passwordController.text)
                         .then((value) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomeScreen()));
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const custom.NavigationBar()),
+                      );
                     }).onError((error, stackTrace) {});
                     await FirestoreService()
                         .addUser(emailController.text, usernameController.text);

@@ -19,7 +19,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const SignInScreen(), // Set SignInScreen as the initial screen
+      home: const SignInScreen(),
     );
   }
 }

@@ -31,16 +31,30 @@ class FieldDetailScreen extends StatelessWidget {
   }
 
   Widget _buildTopImageSection(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.5,
-      width: MediaQuery.of(context).size.width,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.network(fieldLocationImage, fit: BoxFit.cover),
-          ),
-          _buildBackButton(context),
-        ],
+    return InkWell(
+      onTap: () async {
+        final query = Uri.encodeComponent(fieldName);
+        final url =
+            Uri.parse('https://www.google.com/maps/search/?api=1&query=$query');
+        if (await canLaunchUrl(url)) {
+          await launchUrl(url, mode: LaunchMode.externalApplication);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Could not launch $url')),
+          );
+        }
+      },
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.5,
+        width: MediaQuery.of(context).size.width,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.network(fieldLocationImage, fit: BoxFit.cover),
+            ),
+            _buildBackButton(context),
+          ],
+        ),
       ),
     );
   }
