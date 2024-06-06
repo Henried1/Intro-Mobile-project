@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/screens/signup_screen.dart';
 import 'package:intro_mobile_project/widgets/registration&InlogWidget.dart';
+import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
+    as custom;
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -15,6 +16,28 @@ class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+
+  // Function to handle sign-in
+  void signIn() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        // Navigate to NavigationBar after successful sign-in
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const custom.NavigationBar()),
+        );
+      } catch (e) {
+        // Handle sign-in error
+        // You can display an error message to the user
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,23 +94,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                signInSignUpButton(context, true, () async {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    FirebaseAuth.instance
-                        .signInWithEmailAndPassword(
-                            email: emailController.text,
-                            password: passwordController.text)
-                        .then((value) {
-                      print("Succesful sign in");
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomeScreen()));
-                    }).onError((error, stackTrace) {
-                      print("Error ${error.toString()}");
-                    });
-                  }
-                }),
+                signInSignUpButton(context, true, signIn),
                 signUpOption(),
               ]),
             ),

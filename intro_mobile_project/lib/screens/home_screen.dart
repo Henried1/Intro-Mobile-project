@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/games_screen.dart';
 import 'package:intro_mobile_project/screens/reservationsList_screen.dart';
-import 'package:intro_mobile_project/widgets/navigationBarWidget.dart'
-    as customNavBar;
 import 'package:intro_mobile_project/screens/fields_screen.dart';
 
 const Color primaryColor = Color.fromARGB(255, 245, 90, 79);
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,7 +124,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: const customNavBar.NavigationBar(),
     );
   }
 }
