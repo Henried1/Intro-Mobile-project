@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/widgets/publicGamesTabWidget.dart';
 import 'package:intro_mobile_project/widgets/userGamesTabWidget.dart';
+import 'package:intro_mobile_project/widgets/matchHistoryTabWidget.dart'; // Make sure this import is correct
 
 const Color primaryColor = Color.fromARGB(255, 245, 90, 79);
 
@@ -10,7 +11,7 @@ class GamesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3, // Update the length to include the new tab
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Games'),
@@ -21,6 +22,7 @@ class GamesScreen extends StatelessWidget {
             tabs: const [
               Tab(text: 'Public Games'),
               Tab(text: 'My Games'),
+              Tab(text: 'Match History'), // Add the new tab
             ],
           ),
         ),
@@ -28,6 +30,7 @@ class GamesScreen extends StatelessWidget {
           children: [
             PublicGamesTab(),
             UserGamesTab(),
+            MatchHistoryTab(), // Add the new tab
           ],
         ),
       ),

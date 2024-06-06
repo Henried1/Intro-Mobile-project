@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/screens/edit_profile_screen.dart';
-import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
-    as customNavBar;
 import 'package:url_launcher/url_launcher_string.dart';
 
 const Color primaryColor = Color.fromARGB(255, 245, 90, 79);
@@ -21,7 +18,6 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   String username = 'Loading...';
   String email = 'Loading...';
-  String initial = '';
 
   @override
   void initState() {
@@ -60,15 +56,6 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
       });
     }
   }
-
-  // Future<void> _launchURL() async {
-  //   const url = 'http://www.example.com';
-  //   if (await canLaunch(url)) {
-  //     await launch(url);
-  //   } else {
-  //     throw 'Could not launch $url';
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -167,82 +154,53 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                 child: Align(
                   alignment: const AlignmentDirectional(0.0, 1.0),
                   child: Container(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      height: MediaQuery.of(context).size.width * 0.3,
-                      decoration: BoxDecoration(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    height: MediaQuery.of(context).size.width * 0.3,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(
                         color: Colors.white,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 5.0,
-                        ),
+                        width: 5.0,
                       ),
-                      child: CircleAvatar(
-                        child: Text(
-                          username[0].toUpperCase(),
-                          style: const TextStyle(fontSize: 50.0),
-                        ),
-                      )),
+                    ),
+                    child: CircleAvatar(
+                      child: Text(
+                        username[0].toUpperCase(),
+                        style: const TextStyle(fontSize: 50.0),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               Align(
                 alignment: const AlignmentDirectional(0.0, 0.0),
                 child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                  padding:
+                      const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
                   child: Column(
                     children: [
                       Text(
                         username,
-                        style: const TextStyle(fontSize: 25, color: Colors.black),
+                        style:
+                            const TextStyle(fontSize: 25, color: Colors.black),
                       ),
                       Text(
                         email,
-                        style: const TextStyle(fontSize: 15, color: Colors.grey),
+                        style:
+                            const TextStyle(fontSize: 15, color: Colors.grey),
                       ),
                     ],
                   ),
                 ),
               ),
               Expanded(
-                //Deze expanded zorgt ervoor dat de onderstaande widgets bottom aligned zijn
                 child: Container(),
               ),
-              // GestureDetector(
-              //   onTap: () async {
-              //     showAboutDialog(
-              //       context: context,
-              //       applicationName: 'Paddle App',
-              //       applicationVersion: '1.0.0',
-              //     );
-              //   },
-              //   child: Container(
-              //     margin: const EdgeInsets.only(
-              //         left: 20.0, right: 20.0, bottom: 20),
-              //     padding: const EdgeInsets.all(20.0),
-              //     decoration: BoxDecoration(
-              //       color: primaryColor,
-              //       borderRadius: BorderRadius.circular(20.0),
-              //     ),
-              //     child: const Row(
-              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //       children: [
-              //         Text(
-              //           'About',
-              //           style: TextStyle(fontSize: 24.0, color: Colors.white),
-              //         ),
-              //         Icon(
-              //           Icons.arrow_forward_ios_outlined,
-              //           color: Colors.white,
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
               GestureDetector(
                 onTap: () async {
                   const url =
                       'https://docs.google.com/forms/d/e/1FAIpQLSdozt0pcXY7Jech1quq9E6EmDlth4ATEsXaJJkmJkIoH1-Xvg/viewform?usp=sf_link';
-
                   await launchUrlString(url);
                 },
                 child: Container(
@@ -304,7 +262,6 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
             ],
           ),
         ),
-        bottomNavigationBar: const customNavBar.NavigationBar(),
       ),
     );
   }

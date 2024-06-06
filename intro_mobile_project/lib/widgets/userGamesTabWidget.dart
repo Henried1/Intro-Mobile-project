@@ -7,11 +7,16 @@ import 'package:intl/intl.dart';
 
 const primaryColor = Color.fromARGB(255, 245, 90, 79);
 
-class UserGamesTab extends StatelessWidget {
+class UserGamesTab extends StatefulWidget {
+  UserGamesTab({super.key});
+
+  @override
+  _UserGamesTabState createState() => _UserGamesTabState();
+}
+
+class _UserGamesTabState extends State<UserGamesTab> {
   final FirestoreService _firestoreService = FirestoreService();
   final String? userEmail = FirebaseAuth.instance.currentUser?.email;
-
-  UserGamesTab({super.key});
 
   Future<String> getUsername(String email) async {
     DocumentSnapshot userDoc =
@@ -45,6 +50,82 @@ class UserGamesTab extends StatelessWidget {
     );
   }
 
+  void _showMatchDetails(
+      BuildContext context, Map<String, dynamic> data, String docId) async {
+    List currentPlayers = data['CurrentPlayers'] ?? [];
+    List<String> usernames =
+        await getUsernames(List<String>.from(currentPlayers));
+    Timestamp matchTime = data['Date'];
+    DateTime matchDateTime = matchTime.toDate();
+    String formattedDate = DateFormat('yMMMMd').add_jm().format(matchDateTime);
+    TextEditingController resultController = TextEditingController();
+
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Match Details'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Field: ${data['Field']}'),
+                Text('Players: ${currentPlayers.length}/${data['Players']}'),
+                const SizedBox(height: 10),
+                const Text('Current Players:'),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: usernames
+                      .map((username) => buildCircleAvatar(username))
+                      .toList(),
+                ),
+                Text('Time: $formattedDate'),
+                if (data['isEnded'] == null || data['isEnded'] == false) ...[
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: resultController,
+                    decoration: const InputDecoration(
+                      labelText: 'Enter Match Result',
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            if (data['isEnded'] == null || data['isEnded'] == false) ...[
+              TextButton(
+                child: const Text('Submit Result'),
+                onPressed: () {
+                  _firestoreService.addMatchResult(
+                      docId, resultController.text);
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('End Match'),
+                onPressed: () {
+                  _firestoreService.endMatch(docId, userEmail!);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -59,6 +140,7 @@ class UserGamesTab extends StatelessWidget {
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return const Center(child: Text('You have no matches'));
         }
+
         return ListView(
           children: snapshot.data!.docs.map((doc) {
             Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
@@ -91,45 +173,8 @@ class UserGamesTab extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: () async {
-                      List<String> usernames =
-                          await getUsernames(List<String>.from(currentPlayers));
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Match Details'),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Field: ${data['Field']}'),
-                                Text(
-                                    'Players: ${currentPlayers.length}/${data['Players']}'),
-                                const SizedBox(height: 10),
-                                const Text('Current Players:'),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children: usernames
-                                      .map((username) =>
-                                          buildCircleAvatar(username))
-                                      .toList(),
-                                ),
-                                Text('Time: $formattedDate'),
-                              ],
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('Close'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                    onPressed: () {
+                      _showMatchDetails(context, data, doc.id);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,

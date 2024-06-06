@@ -56,6 +56,7 @@ class FirestoreService {
       'Field': fieldName,
       'Location': fieldLocation,
       'isPrivate': isPrivate,
+      'isEnded': false, // Add isEnded field here
     });
 
     return true;
@@ -71,6 +72,14 @@ class FirestoreService {
   Stream<QuerySnapshot> getUserMatches(String userEmail) {
     return _db
         .collection('Reservations')
+        .where('CurrentPlayers', arrayContains: userEmail)
+        .where('isEnded', isEqualTo: false)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getMatchHistory(String userEmail) {
+    return _db
+        .collection('MatchHistory')
         .where('CurrentPlayers', arrayContains: userEmail)
         .snapshots();
   }
@@ -100,6 +109,41 @@ class FirestoreService {
         if (currentPlayers.contains(userEmail)) {
           currentPlayers.remove(userEmail);
           transaction.update(matchRef, {'CurrentPlayers': currentPlayers});
+        }
+      }
+    });
+  }
+
+  Future<void> addMatchResult(String matchId, String result) async {
+    DocumentReference matchRef = _db.collection('Reservations').doc(matchId);
+    await matchRef.update({
+      'Result': result,
+    });
+
+    // Also add to MatchHistory collection
+    DocumentSnapshot matchSnapshot = await matchRef.get();
+    if (matchSnapshot.exists) {
+      Map<String, dynamic> matchData =
+          matchSnapshot.data() as Map<String, dynamic>;
+      matchData['Result'] = result;
+      await _db.collection('MatchHistory').doc(matchId).set(matchData);
+    }
+  }
+
+  Future<void> endMatch(String matchId, String userEmail) async {
+    DocumentReference matchRef = _db.collection('Reservations').doc(matchId);
+    await _db.runTransaction((transaction) async {
+      DocumentSnapshot matchSnapshot = await transaction.get(matchRef);
+      if (matchSnapshot.exists) {
+        List currentPlayers = List.from(matchSnapshot['CurrentPlayers'] ?? []);
+        if (currentPlayers.contains(userEmail)) {
+          transaction.update(matchRef, {'isEnded': true});
+
+          // Also add to MatchHistory collection
+          Map<String, dynamic> matchData =
+              matchSnapshot.data() as Map<String, dynamic>;
+          matchData['isEnded'] = true;
+          await _db.collection('MatchHistory').doc(matchId).set(matchData);
         }
       }
     });
