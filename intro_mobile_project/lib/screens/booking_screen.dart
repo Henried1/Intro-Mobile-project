@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intro_mobile_project/service/database.dart';
+import 'package:intro_mobile_project/service/database_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'

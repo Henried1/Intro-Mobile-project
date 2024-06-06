@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/signup_screen.dart';
-import 'package:intro_mobile_project/widgets/registration&InlogWidget.dart';
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
     as custom;
+import 'package:intro_mobile_project/widgets/Registration&InlogWidget.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
