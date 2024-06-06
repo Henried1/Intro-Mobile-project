@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intro_mobile_project/service/database_service.dart';
+import 'package:intro_mobile_project/service/database.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
@@ -45,7 +45,6 @@ class _BookingPageState extends State<BookingPage> {
         .getBookedSlots(_selectedDay)
         .listen((QuerySnapshot snapshot) {
       final bookedSlots = snapshot.docs.map((doc) => doc.id).toList();
-      print("Fetched booked slots: $bookedSlots");
       if (mounted) {
         setState(() {
           _bookedSlots = bookedSlots;
@@ -193,7 +192,7 @@ class _BookingPageState extends State<BookingPage> {
               _selectedTimeSlotIndex = null;
             } else {}
           });
-          _fetchBookedSlots(); // Update booked slots on date change
+          _fetchBookedSlots();
         }
       },
     );
@@ -215,7 +214,6 @@ class _BookingPageState extends State<BookingPage> {
         }
 
         _bookedSlots = snapshot.data!.docs.map((doc) => doc.id).toList();
-        print("Booked slots in stream builder: $_bookedSlots");
 
         return SliverGrid(
           delegate: SliverChildBuilderDelegate(
@@ -250,9 +248,6 @@ class _BookingPageState extends State<BookingPage> {
                       index < _selectedTimeSlotIndex! + 2)) {
                 isBooked = true;
               }
-
-              print(
-                  "Slot ID: $slotId, isBooked: $isBooked, isGreyedOut: $isGreyedOut");
 
               return InkWell(
                 splashColor: Colors.transparent,
@@ -372,7 +367,7 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   void _showErrorDialog(String message) {
-    if (!mounted) return; // Check before showing dialog
+    if (!mounted) return;
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -393,7 +388,7 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   void _showSuccessDialog(String message) {
-    if (!mounted) return; // Check before showing dialog
+    if (!mounted) return;
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {

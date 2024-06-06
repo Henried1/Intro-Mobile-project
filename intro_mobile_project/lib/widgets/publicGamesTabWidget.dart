@@ -100,7 +100,7 @@ class PublicGamesTab extends StatelessWidget {
                               }
                             : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
+                          backgroundColor: Colors.grey,
                           foregroundColor: Colors.white,
                         ),
                         child: Text(buttonText),

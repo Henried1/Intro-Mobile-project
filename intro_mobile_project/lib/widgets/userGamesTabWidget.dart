@@ -70,7 +70,7 @@ class _UserGamesTabState extends State<UserGamesTab> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Match Details'),
+              title: const Text('Match Details'),
               content: SingleChildScrollView(
                 child: Form(
                   key: _formKey,

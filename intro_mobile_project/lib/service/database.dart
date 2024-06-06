@@ -7,7 +7,56 @@ class FirestoreService {
     await _db.collection("Users").doc(email).set({
       'Email': email,
       'Username': username,
+      'Following': [],
     });
+  }
+
+  Future<void> followUser(String currentUserEmail, String userEmail) async {
+    DocumentReference currentUserRef =
+        _db.collection("Users").doc(currentUserEmail);
+
+    try {
+      await _db.runTransaction((transaction) async {
+        DocumentSnapshot currentUserSnapshot =
+            await transaction.get(currentUserRef);
+
+        if (currentUserSnapshot.exists) {
+          List<dynamic> following =
+              List.from(currentUserSnapshot['Following'] ?? []);
+
+          if (!following.contains(userEmail)) {
+            following.add(userEmail);
+            transaction.update(currentUserRef, {'Following': following});
+          } else {}
+        } else {}
+      });
+    } catch (e) {}
+  }
+
+  Future<void> unfollowUser(String currentUserEmail, String userEmail) async {
+    DocumentReference currentUserRef =
+        _db.collection("Users").doc(currentUserEmail);
+
+    try {
+      await _db.runTransaction((transaction) async {
+        DocumentSnapshot currentUserSnapshot =
+            await transaction.get(currentUserRef);
+
+        if (currentUserSnapshot.exists) {
+          List<dynamic> following =
+              List.from(currentUserSnapshot['Following'] ?? []);
+
+          if (following.contains(userEmail)) {
+            following.remove(userEmail);
+            transaction.update(currentUserRef, {'Following': following});
+          } else {}
+        } else {}
+      });
+    } catch (e) {}
+  }
+
+  Stream<QuerySnapshot> getUsers() {
+    return _db.collection('Users').snapshots();
   }
 
   final CollectionReference bookingCollection =
@@ -65,6 +114,7 @@ class FirestoreService {
   Stream<QuerySnapshot> getPublicMatches() {
     return _db
         .collection('Reservations')
+        .where('isEnded', isEqualTo: false)
         .where('isPrivate', isEqualTo: false)
         .snapshots();
   }
@@ -120,7 +170,6 @@ class FirestoreService {
       'Result': result,
     });
 
-    // Also add to MatchHistory collection
     DocumentSnapshot matchSnapshot = await matchRef.get();
     if (matchSnapshot.exists) {
       Map<String, dynamic> matchData =
@@ -136,7 +185,6 @@ class FirestoreService {
       'Winner': winnerEmail,
     });
 
-    // Also update the MatchHistory collection
     DocumentSnapshot matchSnapshot = await matchRef.get();
     if (matchSnapshot.exists) {
       Map<String, dynamic> matchData =

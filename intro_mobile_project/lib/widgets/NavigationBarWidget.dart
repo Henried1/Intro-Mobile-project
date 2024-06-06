@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/screens/profile_screen.dart';
+import 'package:intro_mobile_project/screens/social_screen.dart';
 
 class NavigationBar extends StatefulWidget {
   const NavigationBar({super.key});
@@ -14,7 +15,7 @@ class _NavigationBarState extends State<NavigationBar> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
-    Center(child: Text('Search Screen')), // Add your SearchScreen here
+    SocialScreen(),
     ProfileScreenWidget(),
   ];
 
@@ -39,7 +40,7 @@ class _NavigationBarState extends State<NavigationBar> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_pin_circle),
-            label: 'Search',
+            label: 'Network',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

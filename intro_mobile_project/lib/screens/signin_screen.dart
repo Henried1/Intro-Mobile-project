@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intro_mobile_project/screens/signup_screen.dart';
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
     as custom;
 import 'package:intro_mobile_project/widgets/Registration&InlogWidget.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+  const SignInScreen({Key? key}) : super(key: key);
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -16,24 +17,48 @@ class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  String? emailError;
+  String? passwordError;
 
   // Function to handle sign-in
   void signIn() async {
     if (_formKey.currentState?.validate() ?? false) {
+      String email = emailController.text.trim();
+      String password = passwordController.text.trim();
+
+      if (email.isEmpty || password.isEmpty) {
+        setState(() {
+          emailError = 'Email or password cannot be empty.';
+          passwordError = null;
+        });
+        return;
+      }
+
       try {
         UserCredential userCredential =
             await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
+          email: email,
+          password: password,
         );
-        // Navigate to NavigationBar after successful sign-in
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const custom.NavigationBar()),
-        );
+
+        if (userCredential.user != null) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const custom.NavigationBar()),
+          );
+        } else {
+          setState(() {
+            emailError = 'Sign-in failed. Please try again.';
+            passwordError = null;
+          });
+        }
       } catch (e) {
-        // Handle sign-in error
-        // You can display an error message to the user
+        print('Sign-in error: $e');
+        setState(() {
+          emailError = null;
+          passwordError = 'Invalid credentials. Please try again.';
+        });
       }
     }
   }
@@ -71,7 +96,17 @@ class _SignInScreenState extends State<SignInScreen> {
                     }
                     return null;
                   },
+                  onChanged: (_) {
+                    setState(() {
+                      emailError = null;
+                    });
+                  },
                 ),
+                if (emailError != null)
+                  Text(
+                    emailError!,
+                    style: TextStyle(color: Colors.red),
+                  ),
                 const SizedBox(
                   height: 30,
                 ),
@@ -90,7 +125,17 @@ class _SignInScreenState extends State<SignInScreen> {
                     }
                     return null;
                   },
+                  onChanged: (_) {
+                    setState(() {
+                      passwordError = null;
+                    });
+                  },
                 ),
+                if (passwordError != null)
+                  Text(
+                    passwordError!,
+                    style: TextStyle(color: Colors.red),
+                  ),
                 const SizedBox(
                   height: 20,
                 ),
