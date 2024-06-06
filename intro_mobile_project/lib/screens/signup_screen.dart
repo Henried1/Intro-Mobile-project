@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/service/database.dart';
-import 'package:intro_mobile_project/widgets/registration&InlogWidget.dart';
 import 'dart:io';
 import 'dart:math';
+
+import 'package:intro_mobile_project/widgets/Registration&InlogWidget.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
