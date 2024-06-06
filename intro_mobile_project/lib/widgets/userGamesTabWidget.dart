@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 const primaryColor = Color.fromARGB(255, 245, 90, 79);
 
 class UserGamesTab extends StatefulWidget {
-  UserGamesTab({super.key});
+  const UserGamesTab({super.key});
 
   @override
   _UserGamesTabState createState() => _UserGamesTabState();
@@ -17,6 +17,7 @@ class UserGamesTab extends StatefulWidget {
 class _UserGamesTabState extends State<UserGamesTab> {
   final FirestoreService _firestoreService = FirestoreService();
   final String? userEmail = FirebaseAuth.instance.currentUser?.email;
+  final _formKey = GlobalKey<FormState>();
 
   Future<String> getUsername(String email) async {
     DocumentSnapshot userDoc =
@@ -59,68 +60,106 @@ class _UserGamesTabState extends State<UserGamesTab> {
     DateTime matchDateTime = matchTime.toDate();
     String formattedDate = DateFormat('yMMMMd').add_jm().format(matchDateTime);
     TextEditingController resultController = TextEditingController();
+    String? selectedWinnerEmail;
 
     if (!mounted) return;
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Match Details'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Field: ${data['Field']}'),
-                Text('Players: ${currentPlayers.length}/${data['Players']}'),
-                const SizedBox(height: 10),
-                const Text('Current Players:'),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: usernames
-                      .map((username) => buildCircleAvatar(username))
-                      .toList(),
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Match Details'),
+              content: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Field: ${data['Field']}'),
+                      Text(
+                          'Players: ${currentPlayers.length}/${data['Players']}'),
+                      const SizedBox(height: 10),
+                      const Text('Current Players:'),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: usernames
+                            .map((username) => buildCircleAvatar(username))
+                            .toList(),
+                      ),
+                      Text('Time: $formattedDate'),
+                      if (data['isEnded'] == null ||
+                          data['isEnded'] == false) ...[
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: resultController,
+                          decoration: const InputDecoration(
+                            labelText: 'Enter Match Result',
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a result';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        DropdownButtonFormField<String>(
+                          value: selectedWinnerEmail,
+                          hint: const Text('Select Winner'),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedWinnerEmail = newValue;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Please select a winner';
+                            }
+                            return null;
+                          },
+                          items: currentPlayers
+                              .map<DropdownMenuItem<String>>((playerEmail) {
+                            return DropdownMenuItem<String>(
+                              value: playerEmail,
+                              child: Text(usernames[
+                                  currentPlayers.indexOf(playerEmail)]),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
-                Text('Time: $formattedDate'),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Close'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
                 if (data['isEnded'] == null || data['isEnded'] == false) ...[
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: resultController,
-                    decoration: const InputDecoration(
-                      labelText: 'Enter Match Result',
-                    ),
+                  TextButton(
+                    child: const Text('End Match'),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _firestoreService.addMatchResult(
+                            docId, resultController.text);
+                        _firestoreService.setMatchWinner(
+                            docId, selectedWinnerEmail!);
+                        _firestoreService.endMatch(docId, userEmail!);
+                        Navigator.of(context).pop();
+                      }
+                    },
                   ),
                 ],
               ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            if (data['isEnded'] == null || data['isEnded'] == false) ...[
-              TextButton(
-                child: const Text('Submit Result'),
-                onPressed: () {
-                  _firestoreService.addMatchResult(
-                      docId, resultController.text);
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: const Text('End Match'),
-                onPressed: () {
-                  _firestoreService.endMatch(docId, userEmail!);
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ],
+            );
+          },
         );
       },
     );
@@ -147,8 +186,7 @@ class _UserGamesTabState extends State<UserGamesTab> {
             List currentPlayers = data['CurrentPlayers'] ?? [];
             Timestamp matchTime = data['Date'];
             DateTime matchDateTime = matchTime.toDate();
-            String formattedDate =
-                DateFormat('yMMMMd').add_jm().format(matchDateTime);
+            DateFormat('yMMMMd').add_jm().format(matchDateTime);
 
             return ListTile(
               title: Text('${data['Field']} (${data['Location']})'),

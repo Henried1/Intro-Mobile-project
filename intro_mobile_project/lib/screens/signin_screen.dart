@@ -26,14 +26,12 @@ class _SignInScreenState extends State<SignInScreen> {
           email: emailController.text,
           password: passwordController.text,
         );
-        print("Successful sign in");
         // Navigate to NavigationBar after successful sign-in
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const custom.NavigationBar()),
         );
       } catch (e) {
-        print("Error signing in: $e");
         // Handle sign-in error
         // You can display an error message to the user
       }

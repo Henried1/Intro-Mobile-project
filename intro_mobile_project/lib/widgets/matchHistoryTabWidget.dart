@@ -55,17 +55,32 @@ class MatchHistoryTab extends StatelessWidget {
             DateTime matchDateTime = matchTime.toDate();
             String formattedDate =
                 DateFormat('yMMMMd').add_jm().format(matchDateTime);
+            String? winnerEmail = data['Winner'];
 
-            return ListTile(
-              title: Text('${data['Field']} (${data['Location']})'),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Players: ${currentPlayers.length}/${data['Players']}'),
-                  Text('Result: ${data['Result'] ?? 'N/A'}'),
-                  Text('Ended: $formattedDate'),
-                ],
-              ),
+            return FutureBuilder<String>(
+              future: winnerEmail != null
+                  ? getUsername(winnerEmail)
+                  : Future.value('N/A'),
+              builder: (context, winnerSnapshot) {
+                if (winnerSnapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                String winnerUsername = winnerSnapshot.data ?? 'N/A';
+
+                return ListTile(
+                  title: Text('${data['Field']} (${data['Location']})'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          'Players: ${currentPlayers.length}/${data['Players']}'),
+                      Text('Result: ${data['Result'] ?? 'N/A'}'),
+                      Text('Winner: $winnerUsername'),
+                      Text('Ended: $formattedDate'),
+                    ],
+                  ),
+                );
+              },
             );
           }).toList(),
         );

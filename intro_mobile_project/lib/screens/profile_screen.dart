@@ -28,28 +28,23 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
   Future<void> _fetchUserProfile() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null && user.email != null) {
-      print(
-          "Fetching profile for user with email: ${user.email}"); // Debug print
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('Users')
           .doc(user.email)
           .get();
 
       if (userDoc.exists) {
-        print("User document data: ${userDoc.data()}"); // Debug print
         setState(() {
           username = userDoc['Username'] ?? 'No Username';
           email = userDoc['Email'] ?? 'No Email';
         });
       } else {
-        print("User profile not found"); // Debug print
         setState(() {
           username = 'User profile not found';
           email = 'User profile not found';
         });
       }
     } else {
-      print("No user is currently signed in or email is null"); // Debug print
       setState(() {
         username = 'No user is signed in';
         email = 'No user is signed in';
@@ -104,7 +99,6 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
 
                   case 'Log out':
                     await FirebaseAuth.instance.signOut();
-                    print("Logged out");
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -229,7 +223,6 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
               GestureDetector(
                 onTap: () async {
                   await FirebaseAuth.instance.signOut();
-                  print("Logged out");
                   Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -82,8 +82,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   obscureText: false,
                   controller: usernameController,
                   onChanged: (value) {
-                    setState(
-                        () {}); // This will trigger a rebuild of the widget tree
+                    setState(() {});
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -140,14 +139,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             email: emailController.text,
                             password: passwordController.text)
                         .then((value) {
-                      print("Succesful account creation");
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const HomeScreen()));
-                    }).onError((error, stackTrace) {
-                      print("Error ${error.toString()}");
-                    });
+                    }).onError((error, stackTrace) {});
                     await FirestoreService()
                         .addUser(emailController.text, usernameController.text);
                   }

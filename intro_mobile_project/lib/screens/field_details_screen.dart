@@ -31,7 +31,7 @@ class FieldDetailScreen extends StatelessWidget {
   }
 
   Widget _buildTopImageSection(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
       width: MediaQuery.of(context).size.width,
       child: Stack(
@@ -118,8 +118,8 @@ class FieldDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          Icon(Icons.sports_soccer, color: Colors.white, size: 24),
-          SizedBox(width: 8),
+          const Icon(Icons.sports_soccer, color: Colors.white, size: 24),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
               fieldName,
@@ -149,8 +149,8 @@ class FieldDetailScreen extends StatelessWidget {
         },
         child: Row(
           children: [
-            Icon(Icons.location_on, color: Colors.white, size: 24),
-            SizedBox(width: 8),
+            const Icon(Icons.location_on, color: Colors.white, size: 24),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 'Address: $fieldLocation',
@@ -185,7 +185,7 @@ class FieldDetailScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             children: <Widget>[
               Icon(Icons.access_time, color: Colors.white),
               SizedBox(width: 8.0),
@@ -195,16 +195,16 @@ class FieldDetailScreen extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 8.0),
+          const SizedBox(height: 8.0),
           ...openingHours.entries.map((entry) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 2.0),
               child: Text(
                 '${entry.key}: ${entry.value}',
-                style: TextStyle(color: Colors.white, fontSize: 18),
+                style: const TextStyle(color: Colors.white, fontSize: 18),
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );

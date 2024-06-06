@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intro_mobile_project/screens/home_screen.dart';
 import 'package:intro_mobile_project/service/database.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
+    as custom;
 
 const Color primaryColor = Color.fromARGB(255, 245, 90, 79);
 
@@ -26,7 +27,6 @@ class _BookingPageState extends State<BookingPage> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
   int? _selectedTimeSlotIndex;
-  bool _isWeekend = false;
   bool _dateSelected = false;
   bool _timeSelected = false;
   int _selectedPlayers = 2;
@@ -189,12 +189,9 @@ class _BookingPageState extends State<BookingPage> {
             _dateSelected = true;
             if (selectedDay.weekday == DateTime.saturday ||
                 selectedDay.weekday == DateTime.sunday) {
-              _isWeekend = true;
               _timeSelected = false;
               _selectedTimeSlotIndex = null;
-            } else {
-              _isWeekend = false;
-            }
+            } else {}
           });
           _fetchBookedSlots(); // Update booked slots on date change
         }
@@ -407,9 +404,10 @@ class _BookingPageState extends State<BookingPage> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  (route) => false,
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const custom.NavigationBar()),
                 );
               },
             ),

@@ -56,7 +56,7 @@ class FirestoreService {
       'Field': fieldName,
       'Location': fieldLocation,
       'isPrivate': isPrivate,
-      'isEnded': false, // Add isEnded field here
+      'isEnded': false,
     });
 
     return true;
@@ -130,6 +130,22 @@ class FirestoreService {
     }
   }
 
+  Future<void> setMatchWinner(String matchId, String winnerEmail) async {
+    DocumentReference matchRef = _db.collection('Reservations').doc(matchId);
+    await matchRef.update({
+      'Winner': winnerEmail,
+    });
+
+    // Also update the MatchHistory collection
+    DocumentSnapshot matchSnapshot = await matchRef.get();
+    if (matchSnapshot.exists) {
+      Map<String, dynamic> matchData =
+          matchSnapshot.data() as Map<String, dynamic>;
+      matchData['Winner'] = winnerEmail;
+      await _db.collection('MatchHistory').doc(matchId).set(matchData);
+    }
+  }
+
   Future<void> endMatch(String matchId, String userEmail) async {
     DocumentReference matchRef = _db.collection('Reservations').doc(matchId);
     await _db.runTransaction((transaction) async {
@@ -139,7 +155,6 @@ class FirestoreService {
         if (currentPlayers.contains(userEmail)) {
           transaction.update(matchRef, {'isEnded': true});
 
-          // Also add to MatchHistory collection
           Map<String, dynamic> matchData =
               matchSnapshot.data() as Map<String, dynamic>;
           matchData['isEnded'] = true;
