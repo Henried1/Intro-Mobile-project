@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intro_mobile_project/screens/signin_screen.dart';
+import 'package:intro_mobile_project/screens/profile_screen.dart';
 import 'package:intro_mobile_project/widgets/NavigationBarWidget.dart'
     as customNavBar;
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
+  final VoidCallback onProfileUpdated;
+
+  const EditProfileScreen({Key? key, required this.onProfileUpdated})
+      : super(key: key);
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -15,7 +19,6 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   bool _isChanged = false;
 
   @override
@@ -49,9 +52,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         'Email': emailController.text,
         'Username': usernameController.text,
       });
+
+      widget.onProfileUpdated();
+
       setState(() {
         _isChanged = false;
       });
+
+      Navigator.pop(context);
     }
   }
 
@@ -61,7 +69,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 245, 90, 79),
         title: const Text(
-          'Profile',
+          'Edit Profile',
           style: TextStyle(color: Colors.black),
         ),
         actions: [
@@ -99,7 +107,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           children: [
             TextFormField(
               controller: usernameController,
-              decoration: const InputDecoration(labelText: 'First Name'),
+              decoration: const InputDecoration(labelText: 'Username'),
               onChanged: (value) {
                 setState(() {
                   _isChanged = true;

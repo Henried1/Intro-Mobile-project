@@ -123,19 +123,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 signInSignUpButton(context, false, () async {
                   if (_formKey.currentState?.validate() ?? false) {
-                    FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: emailController.text,
-                            password: passwordController.text)
-                        .then((value) {
+                    try {
+                      UserCredential userCredential = await FirebaseAuth
+                          .instance
+                          .createUserWithEmailAndPassword(
+                              email: emailController.text.toLowerCase(),
+                              password: passwordController.text);
+
+                      await FirestoreService().addUser(
+                          emailController.text.toLowerCase(),
+                          usernameController.text.toLowerCase());
+
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const custom.NavigationBar()),
                       );
-                    }).onError((error, stackTrace) {});
-                    await FirestoreService()
-                        .addUser(emailController.text, usernameController.text);
+                    } catch (e) {
+                      // Handle errors, e.g., show a Snackbar with error message
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Failed to sign up: $e'),
+                      ));
+                    }
                   }
                 }),
                 signInOption()

@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intro_mobile_project/screens/signin_screen.dart';
 import 'package:intro_mobile_project/screens/edit_profile_screen.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -52,6 +52,10 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
     }
   }
 
+  void _handleProfileUpdate() {
+    _fetchUserProfile();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -93,7 +97,9 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const EditProfileScreen()),
+                          builder: (context) => EditProfileScreen(
+                                onProfileUpdated: _handleProfileUpdate,
+                              )),
                     );
                     break;
 
