@@ -99,10 +99,11 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
 
                   case 'Log out':
                     await FirebaseAuth.instance.signOut();
-                    Navigator.push(
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const SignInScreen()),
+                      (Route<dynamic> route) => false,
                     );
                     break;
                 }
@@ -223,10 +224,11 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
               GestureDetector(
                 onTap: () async {
                   await FirebaseAuth.instance.signOut();
-                  Navigator.push(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const SignInScreen()),
+                    (Route<dynamic> route) => false,
                   );
                 },
                 child: Container(

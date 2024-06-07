@@ -17,112 +17,81 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: primaryColor,
       ),
       backgroundColor: Colors.white,
-      body: Column(
+      body: ListView(
         children: [
-          const Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: EdgeInsets.only(top: 20.0, right: 20.0),
-            ),
+          const SizedBox(height: 20.0),
+          buildButtonWithImage(
+            context,
+            'assets/images/book.jpg',
+            'Book a field',
+            const FieldsScreen(),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FieldsScreen()),
-              );
-            },
-            child: Container(
-              margin: const EdgeInsets.all(20.0),
-              padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.sports_tennis_rounded,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'Book a field',
-                    style: TextStyle(fontSize: 24.0, color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
+          buildButtonWithImage(
+            context,
+            'assets/images/reservations.jpg',
+            'View your reservations',
+            const ReservationListScreen(),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ReservationListScreen()),
-              );
-            },
-            child: Container(
-              margin: const EdgeInsets.all(20.0),
-              padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.checklist_rounded,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'View your reservations',
-                    style: TextStyle(fontSize: 24.0, color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const GamesScreen()),
-              );
-            },
-            child: Container(
-              margin: const EdgeInsets.all(20.0),
-              padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.public_rounded,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'Play a game',
-                    style: TextStyle(fontSize: 24.0, color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
+          buildButtonWithImage(
+            context,
+            'assets/images/playing.jpg',
+            'Play a game',
+            const GamesScreen(),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buildButtonWithImage(
+      BuildContext context, String imagePath, String text, Widget screen) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => screen),
+        );
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0),
+              ),
+              child: Image.asset(
+                imagePath,
+                height: 150,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(15.0),
+                  bottomRight: Radius.circular(15.0),
+                ),
+              ),
+              padding: const EdgeInsets.all(15.0),
+              child: Center(
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
